@@ -14,10 +14,10 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int ButtonSendUdp=0x7f050005;
-        public static final int EditText01=0x7f050001;
-        public static final int EditText02=0x7f050002;
+        public static final int ButtonSendDebugMessage=0x7f050005;
         public static final int EditTextDebugMessage=0x7f050004;
+        public static final int EditTextHost=0x7f050001;
+        public static final int EditTextPort=0x7f050002;
         public static final int LinearLayout01=0x7f050000;
         public static final int LinearLayout02=0x7f050003;
     }

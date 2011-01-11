@@ -17,7 +17,7 @@
 		android:gravity="left">
 
 		<EditText android:text="133.71.3.2" android:singleLine="true"
-			android:layout_width="wrap_content" android:id="@+id/EditText01"
+			android:layout_width="wrap_content" android:id="@+id/EditTextHost"
 
 			android:focusable="true" android:layout_height="wrap_content"
 			android:layout_gravity="right"></EditText>
@@ -26,7 +26,7 @@
 
 
 
-		<EditText android:text="12345" android:id="@+id/EditText02"
+		<EditText android:text="12345" android:id="@+id/EditTextPort"
 			android:singleLine="true" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:gravity="right"
 			android:layout_gravity="right"></EditText>
@@ -42,7 +42,7 @@
 		android:layout_height="wrap_content">
 		<EditText android:text="text to transmit" android:id="@+id/EditTextDebugMessage"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
-		<Button android:text="send" android:id="@+id/ButtonSendUdp"
+		<Button android:text="send" android:id="@+id/ButtonSendDebugMessage"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 
 	</LinearLayout>
