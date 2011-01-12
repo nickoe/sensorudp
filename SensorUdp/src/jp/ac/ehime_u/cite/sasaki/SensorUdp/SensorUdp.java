@@ -1,19 +1,21 @@
 package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
+import jp.ac.ehime_u.cite.sasaki.ReceiveUdp.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
+import java.net.SocketException;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 public class SensorUdp extends Activity implements OnClickListener {
 	private String destination_host;
@@ -27,6 +29,22 @@ public class SensorUdp extends Activity implements OnClickListener {
 		Button button_send_udp = (Button) this
 				.findViewById(R.id.ButtonSendToggle);
 		button_send_udp.setOnClickListener(this);
+		
+		//スピナーの設定
+		
+		try {
+			Inet4Addresses inet4_addresses = new Inet4Addresses();
+			ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(this, R.layout.spinner, inet4_addresses.getBroadcastAddresses() );
+			Spinner spinner = (Spinner) findViewById(R.id.SpinnerBroadcastAddress);
+			spinner.setAdapter(array_adapter);
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			Log.v("SensorUdp#onCreate", "SocketException");
+		} catch (VerifyError e) {
+			Log.v("SensorUdp#onCreate", e.toString());
+		}
+		
 	}
 
 	public void onClick(View v) {

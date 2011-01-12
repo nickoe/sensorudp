@@ -61,6 +61,15 @@ public class Inet4Addresses {
 	public ArrayList<InetAddress> getBroadcastInetAddresses() {
 		return broadcastInetAddresses;
 	}
+	
+	public ArrayList<String> getBroadcastAddresses(){
+		ArrayList<String> array_list = new ArrayList<String>();
+		Iterator<InetAddress> broadcast_inet_address_iterator = getBroadcastInetAddresses().iterator();
+		while(broadcast_inet_address_iterator.hasNext()){
+			array_list.add(broadcast_inet_address_iterator.next().getHostAddress());
+		}
+		return array_list;
+	}
 
 	public static void main(String[] args) throws SocketException {
 		Inet4Addresses inet_addresses = new Inet4Addresses();
@@ -77,4 +86,5 @@ public class Inet4Addresses {
 					+ broadcast_addresses_iterator.next().getHostAddress());
 		}
 	}
+	
 }
