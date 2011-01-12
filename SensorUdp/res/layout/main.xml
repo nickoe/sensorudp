@@ -30,8 +30,9 @@
 		<Spinner android:layout_height="wrap_content" android:id="@+id/SpinnerBroadcastAddress"
 			android:layout_width="wrap_content" android:focusable="false"
 			android:enabled="false"></Spinner>
-	<TextView android:text="not implemented yet" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-</LinearLayout>
+		<TextView android:text="not implemented yet" android:id="@+id/TextView02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutMessage"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
@@ -41,6 +42,31 @@
 		<Button android:text="send message" android:layout_width="fill_parent"
 			android:id="@+id/ButtonSendToggle" android:layout_height="wrap_content"></Button>
 	</LinearLayout>
-
-
+	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<TextView android:text="-" android:id="@+id/TextViewAccelerometer1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewAccelerometer2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewAccelerometer3"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutMagneticField"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<TextView android:text="-" android:id="@+id/TextViewMagneticField1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewMagneticField2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewMagneticField3"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutOrientation"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<TextView android:text="-" android:id="@+id/TextViewOrientation1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewOrientation2"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	<TextView android:text="-" android:id="@+id/TextViewOrientation3"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	</LinearLayout>
 </LinearLayout>
