@@ -1,3 +1,5 @@
+package jp.ac.ehime_u.cite.sasaki.ReceiveUdp;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -65,14 +67,14 @@ public class Inet4Addresses {
 		Iterator<InetAddress> unicode_addresses_iterator = inet_addresses
 				.getUnicastInetAddresses().iterator();
 		while (unicode_addresses_iterator.hasNext()) {
-			System.out.println("unicast "+unicode_addresses_iterator.next()
-					.getHostAddress());
+			System.out.println("unicast "
+					+ unicode_addresses_iterator.next().getHostAddress());
 		}
 		Iterator<InetAddress> broadcast_addresses_iterator = inet_addresses
 				.getBroadcastInetAddresses().iterator();
 		while (broadcast_addresses_iterator.hasNext()) {
-			System.out.println("broadcast "+broadcast_addresses_iterator.next()
-					.getHostAddress());
+			System.out.println("broadcast "
+					+ broadcast_addresses_iterator.next().getHostAddress());
 		}
 	}
 }

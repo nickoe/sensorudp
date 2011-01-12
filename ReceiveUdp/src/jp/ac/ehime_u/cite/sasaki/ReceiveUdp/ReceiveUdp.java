@@ -1,3 +1,4 @@
+package jp.ac.ehime_u.cite.sasaki.ReceiveUdp;
 import java.net.*;
 
 public class ReceiveUdp {
