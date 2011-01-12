@@ -2,48 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical">
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:text="@string/hello" />
-
-
-
-
-
-
-
-	<LinearLayout android:id="@+id/LinearLayout01"
+	<TextView android:text="@string/hello" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:id="@+id/TextViewHello"></TextView>
+	<LinearLayout android:id="@+id/LinearLayoutHost"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:orientation="horizontal" android:baselineAligned="false"
-		android:gravity="left">
-
-		<EditText android:text="133.71.3.2" android:singleLine="true"
-			android:layout_width="wrap_content" android:id="@+id/EditTextHost"
-
-			android:focusable="true" android:layout_height="wrap_content"
-			android:layout_gravity="right"></EditText>
-
-
-
-
-
-		<EditText android:text="12345" android:id="@+id/EditTextPort"
-			android:singleLine="true" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:gravity="right"
-			android:layout_gravity="right"></EditText>
-
+		android:orientation="horizontal">
+		<TextView android:text="dest. host" android:id="@+id/TextView01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+		<EditText android:layout_height="wrap_content"
+			android:focusable="true" android:text="133.71.3.2" android:id="@+id/EditTextHost"
+			android:layout_width="wrap_content"></EditText>
 	</LinearLayout>
-
-
-
-
-
-	<LinearLayout android:id="@+id/LinearLayout02"
-		android:orientation="vertical" android:layout_width="wrap_content"
+	<LinearLayout android:id="@+id/LinearLayoutPort"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView android:text="dest. port" android:id="@+id/TextViewPort"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+		<EditText android:layout_height="wrap_content" android:text="12345"
+			android:id="@+id/EditTextPort" android:layout_width="wrap_content"></EditText>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutBroadcastAddress"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:orientation="horizontal">
+		<TextView android:text="broadcast" android:id="@+id/TextViewBroadcast"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+		<Spinner android:layout_height="wrap_content" android:id="@+id/SpinnerBroadcastAddress" android:layout_width="wrap_content"></Spinner>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutMessage"
+		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
-		<EditText android:text="text to transmit" android:id="@+id/EditTextDebugMessage"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
-		<Button android:text="send" android:id="@+id/ButtonSendDebugMessage"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-
+		<EditText android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="text to transmit"
+			android:id="@+id/EditTextDebugMessage"></EditText>
+		<Button android:text="send message" android:layout_width="fill_parent"
+			android:id="@+id/ButtonSendToggle" android:layout_height="wrap_content"></Button>
 	</LinearLayout>
+
+
 </LinearLayout>

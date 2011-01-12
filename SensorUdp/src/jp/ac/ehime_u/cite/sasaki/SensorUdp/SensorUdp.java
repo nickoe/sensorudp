@@ -25,13 +25,13 @@ public class SensorUdp extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		Button button_send_udp = (Button) this
-				.findViewById(R.id.ButtonSendDebugMessage);
+				.findViewById(R.id.ButtonSendToggle);
 		button_send_udp.setOnClickListener(this);
 	}
 
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ButtonSendDebugMessage:
+		case R.id.ButtonSendToggle:
 			SendDebugMessageByUdp();
 			Log.v("SensorUdp#onClick", "ButtonSendDebugMessage");
 			break;
