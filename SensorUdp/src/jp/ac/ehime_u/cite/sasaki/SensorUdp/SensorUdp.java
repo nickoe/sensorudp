@@ -28,9 +28,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 		SensorListener {
 	private String destination_host;
 	private int destination_port;
-	// –{•¨‚ÌƒZƒ“ƒ^[‚ğg‚¤ê‡
+	// æœ¬ç‰©ã®ã‚»ãƒ³ã‚¿ãƒ¼ã‚’ä½¿ã†å ´åˆ
 	private SensorManager sensorManager;
-	// ƒZƒ“ƒT[ƒVƒ~ƒ…ƒŒ[ƒ^‚ğg‚¤ê‡
+	// ã‚»ãƒ³ã‚µãƒ¼ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã†å ´åˆ
 	// private SensorManagerSimulator sensorManager;
 	private TextView textViewAccelerometer1;
 	private TextView textViewAccelerometer2;
@@ -52,7 +52,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 				.findViewById(R.id.ButtonSendToggle);
 		button_send_udp.setOnClickListener(this);
 
-		// ƒXƒsƒi[‚Ìİ’è
+		// ã‚¹ãƒ”ãƒŠãƒ¼ã®è¨­å®š
 
 		try {
 			Inet4Addresses inet4_addresses = new Inet4Addresses();
@@ -68,7 +68,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
 
-		// ƒZƒ“ƒT[î•ñ•\¦—pƒrƒ…[‚Ìæ“¾
+		// ã‚»ãƒ³ã‚µãƒ¼æƒ…å ±è¡¨ç¤ºç”¨ãƒ“ãƒ¥ãƒ¼ã®å–å¾—
 		textViewAccelerometer1 = (TextView) findViewById(R.id.TextViewAccelerometer1);
 		textViewAccelerometer2 = (TextView) findViewById(R.id.TextViewAccelerometer2);
 		textViewAccelerometer3 = (TextView) findViewById(R.id.TextViewAccelerometer3);
@@ -79,10 +79,10 @@ public class SensorUdp extends Activity implements OnClickListener,
 		textViewOrientation2 = (TextView) findViewById(R.id.TextViewOrientation2);
 		textViewOrientation3 = (TextView) findViewById(R.id.TextViewOrientation3);
 
-		// ƒZƒ“ƒT[‚Ìİ’è
+		// ã‚»ãƒ³ã‚µãƒ¼ã®è¨­å®š
 		InitSensorManager();
 
-		// ƒ\ƒPƒbƒg‚ğ—pˆÓ
+		// ã‚½ã‚±ãƒƒãƒˆã‚’ç”¨æ„
 		try {
 			datagramSocket = new DatagramSocket();
 		} catch (SocketException e) {
@@ -133,9 +133,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 	}
 
 	private void InitSensorManager() {
-		// –{•¨‚ÌƒZƒ“ƒ^[‚ğg‚¤ê‡
+		// æœ¬ç‰©ã®ã‚»ãƒ³ã‚¿ãƒ¼ã‚’ä½¿ã†å ´åˆ
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		// ƒZƒ“ƒT[ƒVƒ~ƒ…ƒŒ[ƒ^‚ğg‚¤ê‡
+		// ã‚»ãƒ³ã‚µãƒ¼ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã†å ´åˆ
 		// sensorManager =
 		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
 		// sensorManager.connectSimulator();
@@ -144,24 +144,24 @@ public class SensorUdp extends Activity implements OnClickListener,
 				| SensorManager.SENSOR_MAGNETIC_FIELD
 				| SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		// SensorManager.SENSOR_DELAY_FASTEST Å‚‘¬“x
-		// SensorManager.SENSOR_DELAY_GAME ƒQ[ƒ€‘¬“x
-		// SensorManager.SENSOR_DELAY_NORMAL ’Êí‘¬“x
-		// SensorManager.SENSOR_DELAY_UI UI‘¬“x
+		// SensorManager.SENSOR_DELAY_FASTEST æœ€é«˜é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_GAME ã‚²ãƒ¼ãƒ é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_NORMAL é€šå¸¸é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_UI UIé€Ÿåº¦
 	}
 
 	public void onAccuracyChanged(int i, int j) {
 		// TODO Auto-generated method stub
 	}
 
-	// 10i”ŒÅ’è¬”“_•\¦‚·‚é‚½‚ß‚ÌƒtƒH[ƒ}ƒbƒg‚ğs‚¤ƒNƒ‰ƒX DecimalFormat
+	// 10é€²æ•°å›ºå®šå°æ•°ç‚¹è¡¨ç¤ºã™ã‚‹ãŸã‚ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ DecimalFormat
 	private static final DecimalFormat decimal_format = new DecimalFormat(
 			"000.0000000");
 
 	public void onSensorChanged(int sensor, float[] values) {
 		switch (sensor) {
 		case SensorManager.SENSOR_ACCELEROMETER: {
-			// ‰Á‘¬“xƒZƒ“ƒT[‚Ì’l‚ğ•\¦
+			// åŠ é€Ÿåº¦ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’è¡¨ç¤º
 			textViewAccelerometer1.setText(""
 					+ decimal_format.format(values[0]));
 			textViewAccelerometer2.setText(""
@@ -171,7 +171,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 		}
 			break;
 		case SensorManager.SENSOR_MAGNETIC_FIELD: {
-			// ¥‹CƒZƒ“ƒT[‚Ì’l‚ğ•\¦
+			// ç£æ°—ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’è¡¨ç¤º
 			textViewMagneticField1.setText(""
 					+ decimal_format.format(values[0]));
 			textViewMagneticField2.setText(""
@@ -186,6 +186,6 @@ public class SensorUdp extends Activity implements OnClickListener,
 			textViewOrientation3.setText("" + decimal_format.format(values[2]));
 		}
 			break;
-		}// switch‚ÌI‚í‚è
+		}// switchã®çµ‚ã‚ã‚Š
 	}
 }
