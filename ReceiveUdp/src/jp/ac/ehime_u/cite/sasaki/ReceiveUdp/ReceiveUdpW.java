@@ -9,17 +9,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
-public class ReceiveUdp extends JFrame {
+public class ReceiveUdpW extends JFrame {
 	private static final int PORT = 12345;
 
-	private final static String TITLE = "ReceiveUdp by Takashi SASAKI";
-	private final static String OPENING = "ReceiveUdp v1.0 by Takashi SASAKI, 2011\n"
-			+ "Listening all interfaces for " +PORT+"/udp.\n"
+	private final static String TITLE = "ReceiveUdpW by Takashi SASAKI";
+	private final static String OPENING = "ReceiveUdpW v1.1 by Takashi SASAKI, 2011\n"
+			+ "Listening all interfaces for "
+			+ PORT
+			+ "/udp.\n"
 			+ "-------------------------------------------\n";
 	private JTextArea jTextArea;
 	private JLabel jLabel;
 
-	public ReceiveUdp() {
+	public ReceiveUdpW() {
 		// フレームにレイアウトを設定
 		getContentPane().setLayout(new FlowLayout());
 
@@ -50,7 +52,7 @@ public class ReceiveUdp extends JFrame {
 
 	public static void main(String[] argv) throws Exception {
 		// Swingのフレームを表示
-		ReceiveUdp receive_udp = new ReceiveUdp();
+		ReceiveUdpW receive_udp = new ReceiveUdpW();
 
 		// ワイルドカードアドレスで待ち受け
 		DatagramSocket datagram_socket = new DatagramSocket(PORT);
