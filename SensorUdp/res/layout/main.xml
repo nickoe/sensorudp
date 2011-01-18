@@ -33,21 +33,32 @@
 	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
-	<TextView android:text="accelerometer cvs line" android:id="@+id/TextViewAccelerometer"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+		<CheckBox android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="" android:id="@+id/CheckBoxAccelerometer"></CheckBox>
+		<TextView android:text="accelerometer cvs line" android:id="@+id/TextViewAccelerometer"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
 
 
-	</LinearLayout>
+	
+
+</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutMagneticField"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" 
+	android:text="" android:id="@+id/CheckBoxMagneticField"></CheckBox>
 	<TextView android:text="magnetic field cvs line" android:id="@+id/TextViewMagneticField"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
 
-	</LinearLayout>
+	
+
+</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutOrientation"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" 
+	android:text="" android:id="@+id/CheckBoxOrientation"></CheckBox>
 	<TextView android:text="orientation cvs line" android:id="@+id/TextViewOrientation"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-	</LinearLayout>
+
+</LinearLayout>
 </LinearLayout>

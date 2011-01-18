@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,6 +37,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 	private TextView textViewAccelerometer;
 	private TextView textViewMagneticField;
 	private TextView textViewOrientation;
+	private CheckBox checkBoxAccelerometer;
+	private CheckBox checkBoxMagneticField;
+	private CheckBox checkBoxOrientation;
 	private DatagramSocket datagramSocket;
 
 	/** Called when the activity is first created. */
@@ -53,8 +57,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 			Inet4Addresses inet4_addresses = new Inet4Addresses();
 			ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(this,
 					R.layout.spinner, inet4_addresses.getBroadcastAddresses());
-			//Spinner spinner = (Spinner) findViewById(R.id.SpinnerBroadcastAddress);
-			//spinner.setAdapter(array_adapter);
+			// Spinner spinner = (Spinner)
+			// findViewById(R.id.SpinnerBroadcastAddress);
+			// spinner.setAdapter(array_adapter);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -67,6 +72,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 		textViewAccelerometer = (TextView) findViewById(R.id.TextViewAccelerometer);
 		textViewMagneticField = (TextView) findViewById(R.id.TextViewMagneticField);
 		textViewOrientation = (TextView) findViewById(R.id.TextViewOrientation);
+		checkBoxAccelerometer = (CheckBox) findViewById(R.id.CheckBoxAccelerometer);
+		checkBoxMagneticField = (CheckBox) findViewById(R.id.CheckBoxMagneticField);
+		checkBoxOrientation = (CheckBox) findViewById(R.id.CheckBoxOrientation);
 
 		// センサーの設定
 		InitSensorManager();
@@ -104,10 +112,11 @@ public class SensorUdp extends Activity implements OnClickListener,
 				.findViewById(R.id.EditTextDebugMessage);
 		Editable editable = edit_text_debug_message.getText();
 		String string_to_be_sent = editable.toString() + "\n";
-		SendMessageByUdp(string_to_be_sent);
+		Date date = new Date();
+		SendMessageByUdp("D, " + date.getTime() + ", " + string_to_be_sent);
 	}
 
-	private void SendMessageByUdp(String string_to_be_sent){
+	private void SendMessageByUdp(String string_to_be_sent) {
 		try {
 			byte[] byte_array = string_to_be_sent.getBytes();
 			InetAddress inet_address = InetAddress.getByName(destination_host);
@@ -116,7 +125,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 			// DatagramSocket datagram_socket = new DatagramSocket();
 			if (null == datagramSocket) {
 				// datagramSocket.close();
-				//datagramSocket = null;
+				// datagramSocket = null;
 				datagramSocket = new DatagramSocket();
 			}
 			datagramSocket.send(datagram_packet);
@@ -155,35 +164,41 @@ public class SensorUdp extends Activity implements OnClickListener,
 	public void onSensorChanged(int sensor, float[] values) {
 		switch (sensor) {
 		case SensorManager.SENSOR_ACCELEROMETER: {
-			// 加速度センサーの値を表示
-			Date date = new Date();
-			String accelerometer_cvs_line = "A, " + date.getTime() + ", "
-					+ decimal_format.format(values[0]) + ", "
-					+ decimal_format.format(values[1]) + ", "
-					+ decimal_format.format(values[2]);
-			textViewAccelerometer.setText(accelerometer_cvs_line);
-			SendMessageByUdp(accelerometer_cvs_line + "\n");
+			if (checkBoxAccelerometer.isChecked()) {
+				// 加速度センサーの値を表示
+				Date date = new Date();
+				String accelerometer_cvs_line = "A, " + date.getTime() + ", "
+						+ decimal_format.format(values[0]) + ", "
+						+ decimal_format.format(values[1]) + ", "
+						+ decimal_format.format(values[2]);
+				textViewAccelerometer.setText(accelerometer_cvs_line);
+				SendMessageByUdp(accelerometer_cvs_line + "\n");
+			}
 		}
 			break;
 		case SensorManager.SENSOR_MAGNETIC_FIELD: {
-			// 磁気センサーの値を表示
-			Date date = new Date();
-			String magnetic_field_cvs_line = "M, " + date.getTime() + ", "
-					+ decimal_format.format(values[0]) + ", "
-					+ decimal_format.format(values[1]) + ", "
-					+ decimal_format.format(values[2]);
-			textViewMagneticField.setText(magnetic_field_cvs_line);
-			SendMessageByUdp(magnetic_field_cvs_line + "\n");
+			if (checkBoxMagneticField.isChecked()) {
+				// 磁気センサーの値を表示
+				Date date = new Date();
+				String magnetic_field_cvs_line = "M, " + date.getTime() + ", "
+						+ decimal_format.format(values[0]) + ", "
+						+ decimal_format.format(values[1]) + ", "
+						+ decimal_format.format(values[2]);
+				textViewMagneticField.setText(magnetic_field_cvs_line);
+				SendMessageByUdp(magnetic_field_cvs_line + "\n");
+			}
 		}
 			break;
 		case SensorManager.SENSOR_ORIENTATION: {
-			Date date = new Date();
-			String orientation_cvs_line = "O, " + date.getTime() + ", "
-					+ decimal_format.format(values[0]) + ", "
-					+ decimal_format.format(values[1]) + ", "
-					+ decimal_format.format(values[2]);
-			textViewOrientation.setText(orientation_cvs_line);
-			SendMessageByUdp(orientation_cvs_line + "\n");
+			if (checkBoxOrientation.isChecked()) {
+				Date date = new Date();
+				String orientation_cvs_line = "O, " + date.getTime() + ", "
+						+ decimal_format.format(values[0]) + ", "
+						+ decimal_format.format(values[1]) + ", "
+						+ decimal_format.format(values[2]);
+				textViewOrientation.setText(orientation_cvs_line);
+				SendMessageByUdp(orientation_cvs_line + "\n");
+			}
 		}
 			break;
 		}// switchの終わり
