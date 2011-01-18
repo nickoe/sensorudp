@@ -6,23 +6,23 @@ public class ReceiveUdp {
 	private static final int PORT = 12345;
 
 	public static void main(String[] argv) throws Exception {
-		// ƒƒCƒ‹ƒhƒJ[ƒhƒAƒhƒŒƒX‚Å‘Ò‚¿ó‚¯
+		// ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã‚¢ãƒ‰ãƒ¬ã‚¹ã§å¾…ã¡å—ã‘
 		DatagramSocket datagram_socket = new DatagramSocket(PORT);
 
-		// ó‚¯•t‚¯‚éƒf[ƒ^ƒoƒbƒtƒ@‚ÆUDPƒpƒPƒbƒg‚ğì¬
+		// å—ã‘ä»˜ã‘ã‚‹ãƒ‡ãƒ¼ã‚¿ãƒãƒƒãƒ•ã‚¡ã¨UDPãƒ‘ã‚±ãƒƒãƒˆã‚’ä½œæˆ
 		byte buffer[] = new byte[1024];
 		DatagramPacket datagram_packet = new DatagramPacket(buffer,
 				buffer.length);
 
 		while (true) {
-			// UDPƒpƒPƒbƒg‚ğóM
+			// UDPãƒ‘ã‚±ãƒƒãƒˆã‚’å—ä¿¡
 			datagram_socket.receive(datagram_packet);
 			InetAddress inet_address = datagram_packet.getAddress();
 			String sender_address = inet_address.getHostAddress();
 			int sender_port = datagram_packet.getPort();
 			String received_data = new String(datagram_packet.getData(), 0,
 					datagram_packet.getLength());
-			// óM‚µ‚½ƒf[ƒ^‚ğ•W€o—Í‚Öo—Í
+			// å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’æ¨™æº–å‡ºåŠ›ã¸å‡ºåŠ›
 			System.out.println("[" + sender_address + ":" + sender_port + "]"
 					+ received_data);
 		}

@@ -22,12 +22,12 @@ public class ReceiveUdpW extends JFrame {
 	private JLabel jLabel;
 
 	public ReceiveUdpW() {
-		// ƒtƒŒ[ƒ€‚ÉƒŒƒCƒAƒEƒg‚ğİ’è
+		// ãƒ•ãƒ¬ãƒ¼ãƒ ã«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’è¨­å®š
 		getContentPane().setLayout(new FlowLayout());
 
-		// ƒeƒLƒXƒgƒGƒŠƒA‚ğì¬
+		// ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒªã‚¢ã‚’ä½œæˆ
 		jTextArea = new JTextArea(OPENING, 30, 40) {
-			// appendƒƒ\ƒbƒh‚ğƒI[ƒo[ƒ‰ƒCƒh‚µ‚Äí‚ÉÅIs‚ª•\¦‚³‚ê‚é‚æ‚¤‚É‚·‚é
+			// appendãƒ¡ã‚½ãƒƒãƒ‰ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã—ã¦å¸¸ã«æœ€çµ‚è¡ŒãŒè¡¨ç¤ºã•ã‚Œã‚‹ã‚ˆã†ã«ã™ã‚‹
 			@Override
 			public void append(String str) {
 				super.append(str);
@@ -36,7 +36,7 @@ public class ReceiveUdpW extends JFrame {
 		};
 		jTextArea.setLineWrap(true);
 
-		// ƒtƒŒ[ƒ€‚ÉƒXƒNƒ[ƒ‹ƒyƒCƒ“‚ğİ’è
+		// ãƒ•ãƒ¬ãƒ¼ãƒ ã«ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒšã‚¤ãƒ³ã‚’è¨­å®š
 		JScrollPane j_scroll_pane = new JScrollPane(jTextArea);
 
 		getContentPane().add(j_scroll_pane);
@@ -51,31 +51,31 @@ public class ReceiveUdpW extends JFrame {
 	}
 
 	public static void main(String[] argv) throws Exception {
-		// Swing‚ÌƒtƒŒ[ƒ€‚ğ•\¦
+		// Swingã®ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è¡¨ç¤º
 		ReceiveUdpW receive_udp = new ReceiveUdpW();
 
-		// ƒƒCƒ‹ƒhƒJ[ƒhƒAƒhƒŒƒX‚Å‘Ò‚¿ó‚¯
+		// ãƒ¯ã‚¤ãƒ«ãƒ‰ã‚«ãƒ¼ãƒ‰ã‚¢ãƒ‰ãƒ¬ã‚¹ã§å¾…ã¡å—ã‘
 		DatagramSocket datagram_socket = new DatagramSocket(PORT);
 
-		// ó‚¯•t‚¯‚éƒf[ƒ^ƒoƒbƒtƒ@‚ÆUDPƒpƒPƒbƒg‚ğì¬
+		// å—ã‘ä»˜ã‘ã‚‹ãƒ‡ãƒ¼ã‚¿ãƒãƒƒãƒ•ã‚¡ã¨UDPãƒ‘ã‚±ãƒƒãƒˆã‚’ä½œæˆ
 		byte buffer[] = new byte[1024];
 		DatagramPacket datagram_packet = new DatagramPacket(buffer,
 				buffer.length);
 
 		while (true) {
-			// UDPƒpƒPƒbƒg‚ğóM
+			// UDPãƒ‘ã‚±ãƒƒãƒˆã‚’å—ä¿¡
 			datagram_socket.receive(datagram_packet);
 			InetAddress inet_address = datagram_packet.getAddress();
 			String sender_address = inet_address.getHostAddress();
 			int sender_port = datagram_packet.getPort();
 			String received_data = new String(datagram_packet.getData(), 0,
 					datagram_packet.getLength());
-			// •\¦‚·‚é•¶š—ñ‚ğì¬
+			// è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—ã‚’ä½œæˆ
 			String s = "[" + sender_address + ":" + sender_port + "]"
 					+ received_data;
-			// óM‚µ‚½ƒf[ƒ^‚ğ•W€o—Í‚Öo—Í
+			// å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’æ¨™æº–å‡ºåŠ›ã¸å‡ºåŠ›
 			System.out.println(s);
-			// JTextArea‚É‚à•\¦
+			// JTextAreaã«ã‚‚è¡¨ç¤º
 			receive_udp.jTextArea.append(s);
 		}
 	}
