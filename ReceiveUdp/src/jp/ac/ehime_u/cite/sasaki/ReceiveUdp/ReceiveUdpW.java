@@ -2,6 +2,7 @@ package jp.ac.ehime_u.cite.sasaki.ReceiveUdp;
 
 import java.awt.FlowLayout;
 import java.net.*;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,7 +14,7 @@ public class ReceiveUdpW extends JFrame {
 	private static final int PORT = 12345;
 
 	private final static String TITLE = "ReceiveUdpW by Takashi SASAKI";
-	private final static String OPENING = "ReceiveUdpW v1.1 by Takashi SASAKI, 2011\n"
+	private final static String OPENING = "ReceiveUdpW v1.2 by Takashi SASAKI, 2011\n"
 			+ "Listening all interfaces for "
 			+ PORT
 			+ "/udp.\n"
@@ -26,7 +27,7 @@ public class ReceiveUdpW extends JFrame {
 		getContentPane().setLayout(new FlowLayout());
 
 		// テキストエリアを作成
-		jTextArea = new JTextArea(OPENING, 30, 40) {
+		jTextArea = new JTextArea(OPENING, 30, 60) {
 			// appendメソッドをオーバーライドして常に最終行が表示されるようにする
 			@Override
 			public void append(String str) {
@@ -65,14 +66,15 @@ public class ReceiveUdpW extends JFrame {
 		while (true) {
 			// UDPパケットを受信
 			datagram_socket.receive(datagram_packet);
+			Date received_date = new Date();
 			InetAddress inet_address = datagram_packet.getAddress();
 			String sender_address = inet_address.getHostAddress();
 			int sender_port = datagram_packet.getPort();
 			String received_data = new String(datagram_packet.getData(), 0,
 					datagram_packet.getLength());
 			// 表示する文字列を作成
-			String s = "[" + sender_address + ":" + sender_port + "]"
-					+ received_data;
+			String s = "[" + sender_address + ":" + sender_port + ":"
+					+ received_date.getTime() + "] " + received_data;
 			// 受信したデータを標準出力へ出力
 			System.out.println(s);
 			// JTextAreaにも表示
