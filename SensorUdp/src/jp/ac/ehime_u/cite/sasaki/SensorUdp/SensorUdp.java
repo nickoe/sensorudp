@@ -30,9 +30,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 	private int destination_port;
 	// 本物のセンターを使う場合
 	private SensorManager sensorManager;
-	private TextView textViewAccelerometer1;
 	// センサーシミュレータを使う場合
 	// private SensorManagerSimulator sensorManager;
+	private TextView textViewAccelerometer1;
 	private TextView textViewAccelerometer2;
 	private TextView textViewAccelerometer3;
 	private TextView textViewMagneticField1;
@@ -81,12 +81,12 @@ public class SensorUdp extends Activity implements OnClickListener,
 
 		// センサーの設定
 		InitSensorManager();
-		
+
 		// ソケットを用意
 		try {
 			datagramSocket = new DatagramSocket();
 		} catch (SocketException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
 
@@ -120,9 +120,9 @@ public class SensorUdp extends Activity implements OnClickListener,
 			InetAddress inet_address = InetAddress.getByName(destination_host);
 			DatagramPacket datagram_packet = new DatagramPacket(byte_array,
 					byte_array.length, inet_address, destination_port);
-			//DatagramSocket datagram_socket = new DatagramSocket();
-			if(null != datagramSocket){
-				//datagramSocket.close();
+			// DatagramSocket datagram_socket = new DatagramSocket();
+			if (null != datagramSocket) {
+				// datagramSocket.close();
 				datagramSocket = null;
 				datagramSocket = new DatagramSocket();
 			}
@@ -136,8 +136,8 @@ public class SensorUdp extends Activity implements OnClickListener,
 		// 本物のセンターを使う場合
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		// センサーシミュレータを使う場合
-		// sensorManager = SensorManagerSimulator.getSystemService(context,
-		// Context.SENSOR_SERVICE);
+		// sensorManager =
+		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
 		// sensorManager.connectSimulator();
 
 		sensorManager.registerListener(this, SensorManager.SENSOR_ACCELEROMETER
@@ -154,28 +154,36 @@ public class SensorUdp extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 	}
 
+	// 10進数固定小数点表示するためのフォーマットを行うクラス DecimalFormat
+	private static final DecimalFormat decimal_format = new DecimalFormat(
+			"000.0000000");
+
 	public void onSensorChanged(int sensor, float[] values) {
-		// 10進数固定小数点表示するためのフォーマットを行うクラス DecimalFormat
-		DecimalFormat df = new DecimalFormat("000.0000000");
 		switch (sensor) {
 		case SensorManager.SENSOR_ACCELEROMETER: {
 			// 加速度センサーの値を表示
-			textViewAccelerometer1.setText("" + df.format(values[0]));
-			textViewAccelerometer2.setText("" + df.format(values[1]));
-			textViewAccelerometer3.setText("" + df.format(values[2]));
+			textViewAccelerometer1.setText(""
+					+ decimal_format.format(values[0]));
+			textViewAccelerometer2.setText(""
+					+ decimal_format.format(values[1]));
+			textViewAccelerometer3.setText(""
+					+ decimal_format.format(values[2]));
 		}
 			break;
 		case SensorManager.SENSOR_MAGNETIC_FIELD: {
 			// 磁気センサーの値を表示
-			textViewMagneticField1.setText("" + df.format(values[0]));
-			textViewMagneticField2.setText("" + df.format(values[1]));
-			textViewMagneticField3.setText("" + df.format(values[2]));
+			textViewMagneticField1.setText(""
+					+ decimal_format.format(values[0]));
+			textViewMagneticField2.setText(""
+					+ decimal_format.format(values[1]));
+			textViewMagneticField3.setText(""
+					+ decimal_format.format(values[2]));
 		}
 			break;
 		case SensorManager.SENSOR_ORIENTATION: {
-			textViewOrientation1.setText("" + df.format(values[0]));
-			textViewOrientation2.setText("" + df.format(values[1]));
-			textViewOrientation3.setText("" + df.format(values[2]));
+			textViewOrientation1.setText("" + decimal_format.format(values[0]));
+			textViewOrientation2.setText("" + decimal_format.format(values[1]));
+			textViewOrientation3.setText("" + decimal_format.format(values[2]));
 		}
 			break;
 		}// switchの終わり
