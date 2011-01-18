@@ -7,6 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,19 +29,13 @@ public class SensorUdp extends Activity implements OnClickListener,
 		SensorListener {
 	private String destination_host;
 	private int destination_port;
-	// –{•¨‚ÌƒZƒ“ƒ^[‚ğg‚¤ê‡
+	// æœ¬ç‰©ã®ã‚»ãƒ³ã‚¿ãƒ¼ã‚’ä½¿ã†å ´åˆ
 	private SensorManager sensorManager;
-	// ƒZƒ“ƒT[ƒVƒ~ƒ…ƒŒ[ƒ^‚ğg‚¤ê‡
+	// ã‚»ãƒ³ã‚µãƒ¼ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã†å ´åˆ
 	// private SensorManagerSimulator sensorManager;
-	private TextView textViewAccelerometer1;
-	private TextView textViewAccelerometer2;
-	private TextView textViewAccelerometer3;
-	private TextView textViewMagneticField1;
-	private TextView textViewMagneticField2;
-	private TextView textViewMagneticField3;
-	private TextView textViewOrientation1;
-	private TextView textViewOrientation2;
-	private TextView textViewOrientation3;
+	private TextView textViewAccelerometer;
+	private TextView textViewMagneticField;
+	private TextView textViewOrientation;
 	private DatagramSocket datagramSocket;
 
 	/** Called when the activity is first created. */
@@ -52,14 +47,14 @@ public class SensorUdp extends Activity implements OnClickListener,
 				.findViewById(R.id.ButtonSendToggle);
 		button_send_udp.setOnClickListener(this);
 
-		// ƒXƒsƒi[‚Ìİ’è
+		// ã‚¹ãƒ”ãƒŠãƒ¼ã®è¨­å®š
 
 		try {
 			Inet4Addresses inet4_addresses = new Inet4Addresses();
 			ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(this,
 					R.layout.spinner, inet4_addresses.getBroadcastAddresses());
-			Spinner spinner = (Spinner) findViewById(R.id.SpinnerBroadcastAddress);
-			spinner.setAdapter(array_adapter);
+			//Spinner spinner = (Spinner) findViewById(R.id.SpinnerBroadcastAddress);
+			//spinner.setAdapter(array_adapter);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
@@ -68,21 +63,15 @@ public class SensorUdp extends Activity implements OnClickListener,
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
 
-		// ƒZƒ“ƒT[î•ñ•\¦—pƒrƒ…[‚Ìæ“¾
-		textViewAccelerometer1 = (TextView) findViewById(R.id.TextViewAccelerometer1);
-		textViewAccelerometer2 = (TextView) findViewById(R.id.TextViewAccelerometer2);
-		textViewAccelerometer3 = (TextView) findViewById(R.id.TextViewAccelerometer3);
-		textViewMagneticField1 = (TextView) findViewById(R.id.TextViewMagneticField1);
-		textViewMagneticField2 = (TextView) findViewById(R.id.TextViewMagneticField2);
-		textViewMagneticField3 = (TextView) findViewById(R.id.TextViewMagneticField3);
-		textViewOrientation1 = (TextView) findViewById(R.id.TextViewOrientation1);
-		textViewOrientation2 = (TextView) findViewById(R.id.TextViewOrientation2);
-		textViewOrientation3 = (TextView) findViewById(R.id.TextViewOrientation3);
+		// ã‚»ãƒ³ã‚µãƒ¼æƒ…å ±è¡¨ç¤ºç”¨ãƒ“ãƒ¥ãƒ¼ã®å–å¾—
+		textViewAccelerometer = (TextView) findViewById(R.id.TextViewAccelerometer);
+		textViewMagneticField = (TextView) findViewById(R.id.TextViewMagneticField);
+		textViewOrientation = (TextView) findViewById(R.id.TextViewOrientation);
 
-		// ƒZƒ“ƒT[‚Ìİ’è
+		// ã‚»ãƒ³ã‚µãƒ¼ã®è¨­å®š
 		InitSensorManager();
 
-		// ƒ\ƒPƒbƒg‚ğ—pˆÓ
+		// ã‚½ã‚±ãƒƒãƒˆã‚’ç”¨æ„
 		try {
 			datagramSocket = new DatagramSocket();
 		} catch (SocketException e) {
@@ -113,29 +102,34 @@ public class SensorUdp extends Activity implements OnClickListener,
 		this.destination_port = Integer.parseInt(string_port);
 		EditText edit_text_debug_message = (EditText) this
 				.findViewById(R.id.EditTextDebugMessage);
+		Editable editable = edit_text_debug_message.getText();
+		String string_to_be_sent = editable.toString() + "\n";
+		SendMessageByUdp(string_to_be_sent);
+	}
+
+	private void SendMessageByUdp(String string_to_be_sent){
 		try {
-			Editable editable = edit_text_debug_message.getText();
-			String string = editable.toString();
-			byte[] byte_array = string.getBytes();
+			byte[] byte_array = string_to_be_sent.getBytes();
 			InetAddress inet_address = InetAddress.getByName(destination_host);
 			DatagramPacket datagram_packet = new DatagramPacket(byte_array,
 					byte_array.length, inet_address, destination_port);
 			// DatagramSocket datagram_socket = new DatagramSocket();
-			if (null != datagramSocket) {
+			if (null == datagramSocket) {
 				// datagramSocket.close();
-				datagramSocket = null;
+				//datagramSocket = null;
 				datagramSocket = new DatagramSocket();
 			}
 			datagramSocket.send(datagram_packet);
 		} catch (IOException io_exception) {
+			datagramSocket = null;
 			Log.v("SensorUdp#SendDebugMessageByUdp", io_exception.toString());
 		}
 	}
 
 	private void InitSensorManager() {
-		// –{•¨‚ÌƒZƒ“ƒ^[‚ğg‚¤ê‡
+		// æœ¬ç‰©ã®ã‚»ãƒ³ã‚¿ãƒ¼ã‚’ä½¿ã†å ´åˆ
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		// ƒZƒ“ƒT[ƒVƒ~ƒ…ƒŒ[ƒ^‚ğg‚¤ê‡
+		// ã‚»ãƒ³ã‚µãƒ¼ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã†å ´åˆ
 		// sensorManager =
 		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
 		// sensorManager.connectSimulator();
@@ -144,48 +138,54 @@ public class SensorUdp extends Activity implements OnClickListener,
 				| SensorManager.SENSOR_MAGNETIC_FIELD
 				| SensorManager.SENSOR_ORIENTATION,
 				SensorManager.SENSOR_DELAY_NORMAL);
-		// SensorManager.SENSOR_DELAY_FASTEST Å‚‘¬“x
-		// SensorManager.SENSOR_DELAY_GAME ƒQ[ƒ€‘¬“x
-		// SensorManager.SENSOR_DELAY_NORMAL ’Êí‘¬“x
-		// SensorManager.SENSOR_DELAY_UI UI‘¬“x
+		// SensorManager.SENSOR_DELAY_FASTEST æœ€é«˜é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_GAME ã‚²ãƒ¼ãƒ é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_NORMAL é€šå¸¸é€Ÿåº¦
+		// SensorManager.SENSOR_DELAY_UI UIé€Ÿåº¦
 	}
 
 	public void onAccuracyChanged(int i, int j) {
 		// TODO Auto-generated method stub
 	}
 
-	// 10i”ŒÅ’è¬”“_•\¦‚·‚é‚½‚ß‚ÌƒtƒH[ƒ}ƒbƒg‚ğs‚¤ƒNƒ‰ƒX DecimalFormat
+	// 10é€²æ•°å›ºå®šå°æ•°ç‚¹è¡¨ç¤ºã™ã‚‹ãŸã‚ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ DecimalFormat
 	private static final DecimalFormat decimal_format = new DecimalFormat(
 			"000.0000000");
 
 	public void onSensorChanged(int sensor, float[] values) {
 		switch (sensor) {
 		case SensorManager.SENSOR_ACCELEROMETER: {
-			// ‰Á‘¬“xƒZƒ“ƒT[‚Ì’l‚ğ•\¦
-			textViewAccelerometer1.setText(""
-					+ decimal_format.format(values[0]));
-			textViewAccelerometer2.setText(""
-					+ decimal_format.format(values[1]));
-			textViewAccelerometer3.setText(""
-					+ decimal_format.format(values[2]));
+			// åŠ é€Ÿåº¦ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’è¡¨ç¤º
+			Date date = new Date();
+			String accelerometer_cvs_line = "A, " + date.getTime() + ", "
+					+ decimal_format.format(values[0]) + ", "
+					+ decimal_format.format(values[1]) + ", "
+					+ decimal_format.format(values[2]);
+			textViewAccelerometer.setText(accelerometer_cvs_line);
+			SendMessageByUdp(accelerometer_cvs_line + "\n");
 		}
 			break;
 		case SensorManager.SENSOR_MAGNETIC_FIELD: {
-			// ¥‹CƒZƒ“ƒT[‚Ì’l‚ğ•\¦
-			textViewMagneticField1.setText(""
-					+ decimal_format.format(values[0]));
-			textViewMagneticField2.setText(""
-					+ decimal_format.format(values[1]));
-			textViewMagneticField3.setText(""
-					+ decimal_format.format(values[2]));
+			// ç£æ°—ã‚»ãƒ³ã‚µãƒ¼ã®å€¤ã‚’è¡¨ç¤º
+			Date date = new Date();
+			String magnetic_field_cvs_line = "M, " + date.getTime() + ", "
+					+ decimal_format.format(values[0]) + ", "
+					+ decimal_format.format(values[1]) + ", "
+					+ decimal_format.format(values[2]);
+			textViewMagneticField.setText(magnetic_field_cvs_line);
+			SendMessageByUdp(magnetic_field_cvs_line + "\n");
 		}
 			break;
 		case SensorManager.SENSOR_ORIENTATION: {
-			textViewOrientation1.setText("" + decimal_format.format(values[0]));
-			textViewOrientation2.setText("" + decimal_format.format(values[1]));
-			textViewOrientation3.setText("" + decimal_format.format(values[2]));
+			Date date = new Date();
+			String orientation_cvs_line = "O, " + date.getTime() + ", "
+					+ decimal_format.format(values[0]) + ", "
+					+ decimal_format.format(values[1]) + ", "
+					+ decimal_format.format(values[2]);
+			textViewOrientation.setText(orientation_cvs_line);
+			SendMessageByUdp(orientation_cvs_line + "\n");
 		}
 			break;
-		}// switch‚ÌI‚í‚è
+		}// switchã®çµ‚ã‚ã‚Š
 	}
 }
