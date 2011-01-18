@@ -1,4 +1,5 @@
 package jp.ac.ehime_u.cite.sasaki.ReceiveUdp;
+
 import java.net.*;
 
 public class ReceiveUdp {
@@ -17,10 +18,13 @@ public class ReceiveUdp {
 			// UDPパケットを受信
 			datagram_socket.receive(datagram_packet);
 			InetAddress inet_address = datagram_packet.getAddress();
-			String host_address = inet_address.getHostAddress();
-			String received_data = new String(datagram_packet.getData(),0, datagram_packet.getLength());
+			String sender_address = inet_address.getHostAddress();
+			int sender_port = datagram_packet.getPort();
+			String received_data = new String(datagram_packet.getData(), 0,
+					datagram_packet.getLength());
 			// 受信したデータを標準出力へ出力
-			System.out.println("["+host_address+"]"+received_data);
+			System.out.println("[" + sender_address + ":" + sender_port + "]"
+					+ received_data);
 		}
 	}
 }

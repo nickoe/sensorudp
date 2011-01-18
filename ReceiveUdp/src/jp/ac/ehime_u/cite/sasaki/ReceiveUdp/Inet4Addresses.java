@@ -5,7 +5,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 import java.net.InterfaceAddress;
 import java.util.List;
 
