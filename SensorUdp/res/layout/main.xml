@@ -10,7 +10,7 @@
 		<TextView android:text="dest. host" android:id="@+id/TextView01"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 		<EditText android:layout_height="wrap_content"
-			android:focusable="true" android:text="133.71.3.2" android:id="@+id/EditTextHost"
+			android:focusable="true" android:text="127.0.0.1" android:id="@+id/EditTextHost"
 			android:layout_width="wrap_content"></EditText>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutPort"
@@ -22,6 +22,55 @@
 			android:id="@+id/EditTextPort" android:layout_width="wrap_content"></EditText>
 	</LinearLayout>
 
+	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<CheckBox android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/CheckBoxAccelerometer"></CheckBox>
+		<TextView android:text="accelerometer cvs line" android:id="@+id/TextViewAccelerometer"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+
+
+
+
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutMagneticField"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<CheckBox android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/CheckBoxMagneticField"></CheckBox>
+		<TextView android:text="magnetic field cvs line" android:id="@+id/TextViewMagneticField"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+
+
+
+
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayoutOrientation"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<CheckBox android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/CheckBoxOrientation"></CheckBox>
+		<TextView android:text="orientation cvs line" android:id="@+id/TextViewOrientation"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+
+	</LinearLayout>
+	<RadioGroup android:id="@+id/RadioGroupDelay"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<RadioButton android:text="Fastest" android:layout_width="wrap_content"
+			android:id="@+id/RadioButtonFastest" android:layout_height="wrap_content"></RadioButton>
+		<RadioButton android:text="Game" android:id="@+id/RadioButtonGame"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></RadioButton>
+		<RadioButton android:text="Normal" android:layout_width="wrap_content"
+			android:checked="true" android:id="@+id/RadioButtonNormal"
+			android:layout_height="wrap_content"></RadioButton>
+		<RadioButton android:text="UI" android:id="@+id/RadioButtonUi"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></RadioButton>
+	</RadioGroup>
+
+
+
 	<LinearLayout android:id="@+id/LinearLayoutMessage"
 		android:orientation="horizontal" android:layout_width="wrap_content"
 		android:layout_height="wrap_content">
@@ -31,34 +80,4 @@
 		<Button android:text="send" android:layout_width="wrap_content"
 			android:id="@+id/ButtonSendToggle" android:layout_height="wrap_content"></Button>
 	</LinearLayout>
-	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
-		<CheckBox android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="" android:id="@+id/CheckBoxAccelerometer"></CheckBox>
-		<TextView android:text="accelerometer cvs line" android:id="@+id/TextViewAccelerometer"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
-
-
-	
-
-</LinearLayout>
-	<LinearLayout android:id="@+id/LinearLayoutMagneticField"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
-	<CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" 
-	android:text="" android:id="@+id/CheckBoxMagneticField"></CheckBox>
-	<TextView android:text="magnetic field cvs line" android:id="@+id/TextViewMagneticField"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-
-	
-
-</LinearLayout>
-	<LinearLayout android:id="@+id/LinearLayoutOrientation"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
-	<CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" 
-	android:text="" android:id="@+id/CheckBoxOrientation"></CheckBox>
-	<TextView android:text="orientation cvs line" android:id="@+id/TextViewOrientation"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-</LinearLayout>
 </LinearLayout>
