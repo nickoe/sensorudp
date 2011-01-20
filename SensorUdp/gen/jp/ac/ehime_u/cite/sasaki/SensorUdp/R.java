@@ -27,6 +27,11 @@ public final class R {
         public static final int LinearLayoutMessage=0x7f050007;
         public static final int LinearLayoutOrientation=0x7f050010;
         public static final int LinearLayoutPort=0x7f050004;
+        public static final int RadioButtonFastest=0x7f050014;
+        public static final int RadioButtonGame=0x7f050015;
+        public static final int RadioButtonNormal=0x7f050016;
+        public static final int RadioButtonUI=0x7f050017;
+        public static final int RadioGroup01=0x7f050013;
         public static final int TextView01=0x7f050002;
         public static final int TextViewAccelerometer=0x7f05000c;
         public static final int TextViewHello=0x7f050000;
