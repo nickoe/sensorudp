@@ -10,7 +10,7 @@
 		<TextView android:text="dest. host" android:id="@+id/TextView01"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 		<EditText android:layout_height="wrap_content"
-			android:focusable="true" android:text="133.71.3.2" android:id="@+id/EditTextHost"
+			android:focusable="true" android:text="127.0.0.1" android:id="@+id/EditTextHost"
 			android:layout_width="wrap_content"></EditText>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutPort"
@@ -64,7 +64,7 @@
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
 	</LinearLayout>
-	<RadioGroup android:id="@+id/RadioGroup01"
+	<RadioGroup android:id="@+id/RadioGroupDelay"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:orientation="horizontal">
 		<RadioButton android:text="Fastest" android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
 		<RadioButton android:text="Normal" android:layout_width="wrap_content"
 			android:checked="true" android:id="@+id/RadioButtonNormal"
 			android:layout_height="wrap_content"></RadioButton>
-		<RadioButton android:text="UI" android:id="@+id/RadioButtonUI"
+		<RadioButton android:text="UI" android:id="@+id/RadioButtonUi"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></RadioButton>
 	</RadioGroup>
 

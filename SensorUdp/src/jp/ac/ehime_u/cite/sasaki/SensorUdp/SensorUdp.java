@@ -22,7 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
@@ -40,6 +41,11 @@ public class SensorUdp extends Activity implements OnClickListener,
 	private CheckBox checkBoxAccelerometer;
 	private CheckBox checkBoxMagneticField;
 	private CheckBox checkBoxOrientation;
+	private RadioButton radioButtonFastest;
+	private RadioButton radioButtonGame;
+	private RadioButton radioButtonNormal;
+	private RadioButton radioButtonUi;
+	private RadioGroup radioGroup;
 	private DatagramSocket datagramSocket;
 
 	/** Called when the activity is first created. */
@@ -76,8 +82,28 @@ public class SensorUdp extends Activity implements OnClickListener,
 		checkBoxMagneticField = (CheckBox) findViewById(R.id.CheckBoxMagneticField);
 		checkBoxOrientation = (CheckBox) findViewById(R.id.CheckBoxOrientation);
 
-		// センサーの設定
-		InitSensorManager();
+		// センサー情報取得頻度指定用ラジオボタンの取得
+		radioButtonFastest = (RadioButton) findViewById(R.id.RadioButtonFastest);
+		radioButtonGame = (RadioButton) findViewById(R.id.RadioButtonGame);
+		radioButtonNormal = (RadioButton) findViewById(R.id.RadioButtonNormal);
+		radioButtonUi = (RadioButton) findViewById(R.id.RadioButtonUi);
+		radioGroup = (RadioGroup)findViewById(R.id.RadioGroupDelay);
+		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				UnregisterSensorListener();
+				RegisterSensorListener();
+				Log.v("SensorUdp","Delay changed");
+			}
+		});
+
+		// センサーマネージャーの生成
+		// 本物のセンターを使う場合
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		// センサーシミュレータを使う場合
+		// sensorManager =
+		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
+		// sensorManager.connectSimulator();
+		RegisterSensorListener();
 
 		// ソケットを用意
 		try {
@@ -135,22 +161,31 @@ public class SensorUdp extends Activity implements OnClickListener,
 		}
 	}
 
-	private void InitSensorManager() {
-		// 本物のセンターを使う場合
-		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		// センサーシミュレータを使う場合
-		// sensorManager =
-		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
-		// sensorManager.connectSimulator();
-
+	private void RegisterSensorListener() {
+		int sensor_delay;
+		if (radioButtonFastest.isChecked()) {
+			sensor_delay = SensorManager.SENSOR_DELAY_FASTEST;
+		} else if (radioButtonGame.isChecked()) {
+			sensor_delay = SensorManager.SENSOR_DELAY_GAME;
+		} else if(radioButtonNormal.isChecked()){
+			sensor_delay = SensorManager.SENSOR_DELAY_NORMAL;
+		} else if(radioButtonUi.isChecked()){
+			sensor_delay = SensorManager.SENSOR_DELAY_UI;
+		} else {
+			sensor_delay = SensorManager.SENSOR_DELAY_UI;
+		}
 		sensorManager.registerListener(this, SensorManager.SENSOR_ACCELEROMETER
 				| SensorManager.SENSOR_MAGNETIC_FIELD
 				| SensorManager.SENSOR_ORIENTATION,
-				SensorManager.SENSOR_DELAY_NORMAL);
+				sensor_delay);
 		// SensorManager.SENSOR_DELAY_FASTEST 最高速度
 		// SensorManager.SENSOR_DELAY_GAME ゲーム速度
 		// SensorManager.SENSOR_DELAY_NORMAL 通常速度
 		// SensorManager.SENSOR_DELAY_UI UI速度
+	}
+
+	private void UnregisterSensorListener() {
+		sensorManager.unregisterListener(this);
 	}
 
 	public void onAccuracyChanged(int i, int j) {
