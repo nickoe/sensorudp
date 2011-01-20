@@ -22,15 +22,6 @@
 			android:id="@+id/EditTextPort" android:layout_width="wrap_content"></EditText>
 	</LinearLayout>
 
-	<LinearLayout android:id="@+id/LinearLayoutMessage"
-		android:orientation="horizontal" android:layout_width="wrap_content"
-		android:layout_height="wrap_content">
-		<EditText android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:text="text to transmit"
-			android:id="@+id/EditTextDebugMessage"></EditText>
-		<Button android:text="send" android:layout_width="wrap_content"
-			android:id="@+id/ButtonSendToggle" android:layout_height="wrap_content"></Button>
-	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
 		<CheckBox android:layout_width="wrap_content"
@@ -80,4 +71,13 @@
 
 
 
+	<LinearLayout android:id="@+id/LinearLayoutMessage"
+		android:orientation="horizontal" android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<EditText android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="text to transmit"
+			android:id="@+id/EditTextDebugMessage"></EditText>
+		<Button android:text="send" android:layout_width="wrap_content"
+			android:id="@+id/ButtonSendToggle" android:layout_height="wrap_content"></Button>
+	</LinearLayout>
 </LinearLayout>
