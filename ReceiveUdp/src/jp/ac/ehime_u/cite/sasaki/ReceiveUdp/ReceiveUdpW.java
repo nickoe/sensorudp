@@ -44,11 +44,11 @@ public class ReceiveUdpW extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle(TITLE);
 		// setSize(300, 400);
-		pack();
 		setVisible(true);
 		jLabel = new JLabel();
 		getContentPane().add(jLabel);
 		jLabel.setText("" + PORT);
+		pack();
 	}
 
 	public static void main(String[] argv) throws Exception {
