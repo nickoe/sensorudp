@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TextView.BufferType;
 import android.widget.TextView.OnEditorActionListener;
 
 @SuppressWarnings("deprecation")
@@ -256,6 +257,29 @@ public class SensorUdp extends Activity implements SensorListener,
 		ChangeDestination();
 		// ビューへのイベントハンドラの設定
 		SetListeners();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState){
+		super.onSaveInstanceState(outState);
+		Log.d("SensorUdp", "onSaveInstanceState");
+		outState.putString("editTextHost", editTextHost.getEditableText().toString());
+		outState.putString("editTextPort", editTextPort.getEditableText().toString());
+		outState.putString("editTextGpsMinDistance", editTextGpsMinDistance.getEditableText().toString());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState){
+		super.onRestoreInstanceState(savedInstanceState);
+		Log.d("SensorUdp", "onRestoreInstanceState");
+		String edit_text_host = savedInstanceState.getString("editTextHost");
+		if (edit_text_host != null) {
+			editTextHost.setText(edit_text_host, BufferType.EDITABLE);
+		}
+		String edit_text_port = savedInstanceState.getString("editTextPort");
+		if (edit_text_port != null) {
+			editTextPort.setText(edit_text_port, BufferType.EDITABLE);
+		}
 	}
 
 	void ChangeDestination(){
