@@ -10,6 +10,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -19,6 +20,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -105,7 +109,8 @@ public class SensorUdp extends Activity implements SensorListener,
 	private void SetListeners() {
 		// 送信先IPアドレスが変更された時にはパケット送出を停止
 		editTextHost.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView textview, int i, KeyEvent keyevent) {
+			public boolean onEditorAction(TextView textview, int i,
+					KeyEvent keyevent) {
 				checkBoxAccelerometer.setChecked(false);
 				checkBoxMagneticField.setChecked(false);
 				checkBoxOrientation.setChecked(false);
@@ -118,7 +123,8 @@ public class SensorUdp extends Activity implements SensorListener,
 		});
 		// 送信先ポートが変更された時にはパケット送出を停止
 		editTextPort.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView textview, int i, KeyEvent keyevent) {
+			public boolean onEditorAction(TextView textview, int i,
+					KeyEvent keyevent) {
 				checkBoxAccelerometer.setChecked(false);
 				checkBoxMagneticField.setChecked(false);
 				checkBoxOrientation.setChecked(false);
@@ -237,7 +243,9 @@ public class SensorUdp extends Activity implements SensorListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		onRestoreInstanceState(savedInstanceState);
+		if(savedInstanceState != null) {
+			onRestoreInstanceState(savedInstanceState);
+		}
 		// ビューの取得
 		FindViews();
 
@@ -261,16 +269,19 @@ public class SensorUdp extends Activity implements SensorListener,
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState){
+	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.d("SensorUdp", "onSaveInstanceState");
-		outState.putString("editTextHost", editTextHost.getEditableText().toString());
-		outState.putString("editTextPort", editTextPort.getEditableText().toString());
-		outState.putString("editTextGpsMinDistance", editTextGpsMinDistance.getEditableText().toString());
+		outState.putString("editTextHost", editTextHost.getEditableText()
+				.toString());
+		outState.putString("editTextPort", editTextPort.getEditableText()
+				.toString());
+		outState.putString("editTextGpsMinDistance", editTextGpsMinDistance
+				.getEditableText().toString());
 	}
 
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState){
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		Log.d("SensorUdp", "onRestoreInstanceState");
 		String edit_text_host = savedInstanceState.getString("editTextHost");
@@ -283,7 +294,7 @@ public class SensorUdp extends Activity implements SensorListener,
 		}
 	}
 
-	void ChangeDestination(){
+	void ChangeDestination() {
 		try {
 			datagramSocket = null;
 			datagramSocket = new DatagramSocket();
@@ -306,10 +317,10 @@ public class SensorUdp extends Activity implements SensorListener,
 						min_distance, this);
 			} catch (NumberFormatException e) {
 				checkBoxGps.setChecked(false);
-				Log.d("SensorUdp",e.toString());
-			} catch(IllegalArgumentException e){
+				Log.d("SensorUdp", e.toString());
+			} catch (IllegalArgumentException e) {
 				checkBoxGps.setChecked(false);
-				Log.d("SensorUdp",e.toString());
+				Log.d("SensorUdp", e.toString());
 			}
 		}
 		if (checkBoxNetwork.isChecked()) {
@@ -323,10 +334,10 @@ public class SensorUdp extends Activity implements SensorListener,
 						min_distance, this);
 			} catch (NumberFormatException e) {
 				checkBoxNetwork.setChecked(false);
-				Log.d("SensorUdp",e.toString());
-			} catch (IllegalArgumentException e){
+				Log.d("SensorUdp", e.toString());
+			} catch (IllegalArgumentException e) {
 				checkBoxNetwork.setChecked(false);
-				Log.d("SensorUdp",e.toString());
+				Log.d("SensorUdp", e.toString());
 			}
 		}
 	}
@@ -453,7 +464,7 @@ public class SensorUdp extends Activity implements SensorListener,
 					+ decimal_format.format(location.getLongitude()) + ", "
 					+ location.getTime() + ", "
 					+ decimal_format.format(location.getAccuracy()) + ", "
-					+ decimal_format.format(location.getSpeed()) +"\n";
+					+ decimal_format.format(location.getSpeed()) + "\n";
 			textViewGps.setText(location_by_gps_cvs_string);
 			SendMessageByUdp(location_by_gps_cvs_string);
 		} else if (location.getProvider().equals(
@@ -514,5 +525,27 @@ public class SensorUdp extends Activity implements SensorListener,
 		checkBoxGps.setChecked(false);
 		checkBoxNetwork.setChecked(false);
 		ChangeLocationProvider();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater menu_infrator = getMenuInflater();
+		menu_infrator.inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.itemAbout:
+			Intent intent = new Intent(this, About.class);
+			startActivity(intent);
+			return true;
+		case R.id.itemInterfaces:
+			return true;
+		}
+		return false;
 	}
 }
