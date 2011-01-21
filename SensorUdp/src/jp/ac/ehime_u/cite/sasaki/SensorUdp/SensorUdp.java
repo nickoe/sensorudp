@@ -102,6 +102,30 @@ public class SensorUdp extends Activity implements SensorListener,
 	}
 
 	private void SetListeners() {
+		// 送信先IPアドレスが変更された時にはパケット送出を停止
+		editTextHost.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView textview, int i, KeyEvent keyevent) {
+				checkBoxAccelerometer.setChecked(false);
+				checkBoxMagneticField.setChecked(false);
+				checkBoxOrientation.setChecked(false);
+				checkBoxGps.setChecked(false);
+				checkBoxNetwork.setChecked(false);
+				ChangeLocationProvider();
+				return true;
+			}
+		});
+		// 送信先ポートが変更された時にはパケット送出を停止
+		editTextPort.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView textview, int i, KeyEvent keyevent) {
+				checkBoxAccelerometer.setChecked(false);
+				checkBoxMagneticField.setChecked(false);
+				checkBoxOrientation.setChecked(false);
+				checkBoxGps.setChecked(false);
+				checkBoxNetwork.setChecked(false);
+				ChangeLocationProvider();
+				return true;
+			}
+		});
 		// 加速度センサーの使用可否が変更された場合
 		checkBoxAccelerometer
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
