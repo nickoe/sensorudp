@@ -482,4 +482,37 @@ public class SensorUdp extends Activity implements SensorListener,
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		checkBoxAccelerometer.setChecked(false);
+		checkBoxMagneticField.setChecked(false);
+		checkBoxOrientation.setChecked(false);
+		checkBoxGps.setChecked(false);
+		checkBoxNetwork.setChecked(false);
+		ChangeLocationProvider();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		checkBoxAccelerometer.setChecked(false);
+		checkBoxMagneticField.setChecked(false);
+		checkBoxOrientation.setChecked(false);
+		checkBoxGps.setChecked(false);
+		checkBoxNetwork.setChecked(false);
+		ChangeLocationProvider();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		checkBoxAccelerometer.setChecked(false);
+		checkBoxMagneticField.setChecked(false);
+		checkBoxOrientation.setChecked(false);
+		checkBoxGps.setChecked(false);
+		checkBoxNetwork.setChecked(false);
+		ChangeLocationProvider();
+	}
 }
