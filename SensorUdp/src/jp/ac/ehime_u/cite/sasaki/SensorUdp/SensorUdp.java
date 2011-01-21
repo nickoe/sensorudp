@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TextView.BufferType;
 import android.widget.TextView.OnEditorActionListener;
 
 @SuppressWarnings("deprecation")
@@ -111,6 +112,7 @@ public class SensorUdp extends Activity implements SensorListener,
 				checkBoxGps.setChecked(false);
 				checkBoxNetwork.setChecked(false);
 				ChangeLocationProvider();
+				ChangeDestination();
 				return true;
 			}
 		});
@@ -235,6 +237,7 @@ public class SensorUdp extends Activity implements SensorListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		onRestoreInstanceState(savedInstanceState);
 		// ビューの取得
 		FindViews();
 
@@ -252,14 +255,42 @@ public class SensorUdp extends Activity implements SensorListener,
 		RegisterSensorListener();
 
 		// ソケットを用意
+		ChangeDestination();
+		// ビューへのイベントハンドラの設定
+		SetListeners();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState){
+		super.onSaveInstanceState(outState);
+		Log.d("SensorUdp", "onSaveInstanceState");
+		outState.putString("editTextHost", editTextHost.getEditableText().toString());
+		outState.putString("editTextPort", editTextPort.getEditableText().toString());
+		outState.putString("editTextGpsMinDistance", editTextGpsMinDistance.getEditableText().toString());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState){
+		super.onRestoreInstanceState(savedInstanceState);
+		Log.d("SensorUdp", "onRestoreInstanceState");
+		String edit_text_host = savedInstanceState.getString("editTextHost");
+		if (edit_text_host != null) {
+			editTextHost.setText(edit_text_host, BufferType.EDITABLE);
+		}
+		String edit_text_port = savedInstanceState.getString("editTextPort");
+		if (edit_text_port != null) {
+			editTextPort.setText(edit_text_port, BufferType.EDITABLE);
+		}
+	}
+
+	void ChangeDestination(){
 		try {
+			datagramSocket = null;
 			datagramSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			// e.printStackTrace();
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
-		// ビューへのイベントハンドラの設定
-		SetListeners();
 	}
 
 	void ChangeLocationProvider() {
@@ -422,7 +453,7 @@ public class SensorUdp extends Activity implements SensorListener,
 					+ decimal_format.format(location.getLongitude()) + ", "
 					+ location.getTime() + ", "
 					+ decimal_format.format(location.getAccuracy()) + ", "
-					+ decimal_format.format(location.getSpeed());
+					+ decimal_format.format(location.getSpeed()) +"\n";
 			textViewGps.setText(location_by_gps_cvs_string);
 			SendMessageByUdp(location_by_gps_cvs_string);
 		} else if (location.getProvider().equals(
@@ -435,7 +466,7 @@ public class SensorUdp extends Activity implements SensorListener,
 					+ decimal_format.format(location.getLongitude()) + ", "
 					+ location.getTime() + ", "
 					+ decimal_format.format(location.getAccuracy()) + ", "
-					+ decimal_format.format(location.getSpeed());
+					+ decimal_format.format(location.getSpeed()) + "\n";
 			textViewNetwork.setText(location_by_network_cvs_string);
 			SendMessageByUdp(location_by_network_cvs_string);
 		} else {
