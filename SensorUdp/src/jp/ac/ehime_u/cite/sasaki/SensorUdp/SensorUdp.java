@@ -1,6 +1,5 @@
 package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
-import jp.ac.ehime_u.cite.sasaki.ReceiveUdp.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -22,7 +21,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -56,12 +54,14 @@ public class SensorUdp extends Activity implements SensorListener,
 	private RadioButton radioButtonUi;
 	private RadioGroup radioGroup;
 	private DatagramSocket datagramSocket;
-	private CheckBox checkBoxNetwork;
-	private EditText editTextNetworkMinInterval;
-	private EditText editTextNetworkMinDistance;
 	private CheckBox checkBoxGps;
 	private EditText editTextGpsMinInterval;
 	private EditText editTextGpsMinDistance;
+	private TextView textViewGps;
+	private CheckBox checkBoxNetwork;
+	private EditText editTextNetworkMinInterval;
+	private EditText editTextNetworkMinDistance;
+	private TextView textViewNetwork;
 	private EditText editTextLiteral;
 	private Button buttonLiteral;
 
@@ -89,12 +89,14 @@ public class SensorUdp extends Activity implements SensorListener,
 		radioButtonNormal = (RadioButton) findViewById(R.id.RadioButtonNormal);
 		radioButtonUi = (RadioButton) findViewById(R.id.RadioButtonUi);
 		radioGroup = (RadioGroup) findViewById(R.id.RadioGroupDelay);
+		checkBoxGps = (CheckBox) findViewById(R.id.CheckBoxGps);
+		editTextGpsMinDistance = (EditText) findViewById(R.id.EditTextGpsMinDistance);
+		editTextGpsMinInterval = (EditText) findViewById(R.id.EditTextGpsMinInterval);
+		textViewGps = (TextView) findViewById(R.id.TextViewGps);
 		checkBoxNetwork = (CheckBox) findViewById(R.id.CheckBoxNetwork);
 		editTextNetworkMinDistance = (EditText) findViewById(R.id.EditTextNetworkMinDistance);
 		editTextNetworkMinInterval = (EditText) findViewById(R.id.EditTextNetworkMinInterval);
-		checkBoxGps = (CheckBox) findViewById(R.id.CheckBoxGps);
-		editTextGpsMinDistance = (EditText)findViewById(R.id.EditTextGpsMinDistance);
-		editTextGpsMinInterval = (EditText)findViewById(R.id.EditTextGpsMinInterval);
+		textViewNetwork = (TextView) findViewById(R.id.TextViewNetwork);
 		editTextLiteral = (EditText) this.findViewById(R.id.EditTextLiteral);
 		buttonLiteral = (Button) this.findViewById(R.id.ButtonLiteral);
 	}
@@ -238,6 +240,40 @@ public class SensorUdp extends Activity implements SensorListener,
 
 	void ChangeLocationProvider() {
 		locationManager.removeUpdates(this);
+		if (checkBoxGps.isChecked()) {
+			try {
+				int min_distance = Integer.parseInt(editTextGpsMinDistance
+						.getEditableText().toString());
+				int min_interval = Integer.parseInt(editTextGpsMinInterval
+						.getEditableText().toString());
+				locationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, min_interval,
+						min_distance, this);
+			} catch (NumberFormatException e) {
+				checkBoxGps.setChecked(false);
+				Log.d("SensorUdp",e.toString());
+			} catch(IllegalArgumentException e){
+				checkBoxGps.setChecked(false);
+				Log.d("SensorUdp",e.toString());
+			}
+		}
+		if (checkBoxNetwork.isChecked()) {
+			try {
+				int min_distance = Integer.parseInt(editTextNetworkMinDistance
+						.getEditableText().toString());
+				int min_interval = Integer.parseInt(editTextNetworkMinInterval
+						.getEditableText().toString());
+				locationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, min_interval,
+						min_distance, this);
+			} catch (NumberFormatException e) {
+				checkBoxNetwork.setChecked(false);
+				Log.d("SensorUdp",e.toString());
+			} catch (IllegalArgumentException e){
+				checkBoxNetwork.setChecked(false);
+				Log.d("SensorUdp",e.toString());
+			}
+		}
 	}
 
 	private void SendLiteralByUdp() {
@@ -311,9 +347,8 @@ public class SensorUdp extends Activity implements SensorListener,
 		case SensorManager.SENSOR_ACCELEROMETER: {
 			if (checkBoxAccelerometer.isChecked()) {
 				// 加速度センサーの値を表示
-				++counterAccelerometer;
 				Date date = new Date();
-				String accelerometer_cvs_line = "A, " + counterAccelerometer
+				String accelerometer_cvs_line = "A, " + ++counterAccelerometer
 						+ ", " + date.getTime() + ", "
 						+ decimal_format.format(values[0]) + ", "
 						+ decimal_format.format(values[1]) + ", "
@@ -326,9 +361,8 @@ public class SensorUdp extends Activity implements SensorListener,
 		case SensorManager.SENSOR_MAGNETIC_FIELD: {
 			if (checkBoxMagneticField.isChecked()) {
 				// 磁気センサーの値を表示
-				++counterMagneticField;
 				Date date = new Date();
-				String magnetic_field_cvs_line = "M, " + counterMagneticField
+				String magnetic_field_cvs_line = "M, " + ++counterMagneticField
 						+ ", " + date.getTime() + ", "
 						+ decimal_format.format(values[0]) + ", "
 						+ decimal_format.format(values[1]) + ", "
@@ -340,10 +374,9 @@ public class SensorUdp extends Activity implements SensorListener,
 			break;
 		case SensorManager.SENSOR_ORIENTATION: {
 			if (checkBoxOrientation.isChecked()) {
-				++counterOrientation;
 				Date date = new Date();
-				String orientation_cvs_line = "O, " + counterOrientation + ", "
-						+ date.getTime() + ", "
+				String orientation_cvs_line = "O, " + ++counterOrientation
+						+ ", " + date.getTime() + ", "
 						+ decimal_format.format(values[0]) + ", "
 						+ decimal_format.format(values[1]) + ", "
 						+ decimal_format.format(values[2]);
@@ -356,22 +389,42 @@ public class SensorUdp extends Activity implements SensorListener,
 	}
 
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
+		if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+			Date date = new Date();
+			String location_by_gps_cvs_string = "G, " + ++counterGps + ", "
+					+ date.getTime() + ", "
+					+ decimal_format.format(location.getAltitude()) + ", "
+					+ decimal_format.format(location.getLatitude()) + ", "
+					+ decimal_format.format(location.getLongitude()) + ", "
+					+ location.getTime() + ", "
+					+ decimal_format.format(location.getAccuracy()) + ", "
+					+ decimal_format.format(location.getSpeed());
+			textViewGps.setText(location_by_gps_cvs_string);
+			SendMessageByUdp(location_by_gps_cvs_string);
+		} else if (location.getProvider().equals(
+				LocationManager.NETWORK_PROVIDER)) {
+			Date date = new Date();
+			String location_by_network_cvs_string = "N, " + ++counterNetwork
+					+ ", " + date.getTime() + ", "
+					+ decimal_format.format(location.getAltitude()) + ", "
+					+ decimal_format.format(location.getLatitude()) + ", "
+					+ decimal_format.format(location.getLongitude()) + ", "
+					+ location.getTime() + ", "
+					+ decimal_format.format(location.getAccuracy()) + ", "
+					+ decimal_format.format(location.getSpeed());
+			textViewNetwork.setText(location_by_network_cvs_string);
+			SendMessageByUdp(location_by_network_cvs_string);
+		} else {
+			Log.v("SensorUdp", "Unknown provider " + location.getProvider());
+		}
 	}
 
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
 	}
 }
