@@ -111,6 +111,7 @@ public class SensorUdp extends Activity implements SensorListener,
 				checkBoxGps.setChecked(false);
 				checkBoxNetwork.setChecked(false);
 				ChangeLocationProvider();
+				ChangeDestination();
 				return true;
 			}
 		});
@@ -252,14 +253,19 @@ public class SensorUdp extends Activity implements SensorListener,
 		RegisterSensorListener();
 
 		// ソケットを用意
+		ChangeDestination();
+		// ビューへのイベントハンドラの設定
+		SetListeners();
+	}
+
+	void ChangeDestination(){
 		try {
+			datagramSocket = null;
 			datagramSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			// e.printStackTrace();
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
-		// ビューへのイベントハンドラの設定
-		SetListeners();
 	}
 
 	void ChangeLocationProvider() {
@@ -422,7 +428,7 @@ public class SensorUdp extends Activity implements SensorListener,
 					+ decimal_format.format(location.getLongitude()) + ", "
 					+ location.getTime() + ", "
 					+ decimal_format.format(location.getAccuracy()) + ", "
-					+ decimal_format.format(location.getSpeed());
+					+ decimal_format.format(location.getSpeed()) +"\n";
 			textViewGps.setText(location_by_gps_cvs_string);
 			SendMessageByUdp(location_by_gps_cvs_string);
 		} else if (location.getProvider().equals(
@@ -435,7 +441,7 @@ public class SensorUdp extends Activity implements SensorListener,
 					+ decimal_format.format(location.getLongitude()) + ", "
 					+ location.getTime() + ", "
 					+ decimal_format.format(location.getAccuracy()) + ", "
-					+ decimal_format.format(location.getSpeed());
+					+ decimal_format.format(location.getSpeed()) + "\n";
 			textViewNetwork.setText(location_by_network_cvs_string);
 			SendMessageByUdp(location_by_network_cvs_string);
 		} else {
