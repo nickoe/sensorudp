@@ -13,9 +13,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -27,16 +31,19 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 @SuppressWarnings("deprecation")
-public class SensorUdp extends Activity implements OnClickListener,
-		SensorListener {
+public class SensorUdp extends Activity implements SensorListener,
+		LocationListener {
 	private String destination_host;
 	private int destination_port;
 	// 本物のセンターを使う場合
 	private SensorManager sensorManager;
 	// センサーシミュレータを使う場合
 	// private SensorManagerSimulator sensorManager;
+	private EditText editTextHost;
+	private EditText editTextPort;
 	private TextView textViewAccelerometer;
 	private TextView textViewMagneticField;
 	private TextView textViewOrientation;
@@ -49,44 +56,51 @@ public class SensorUdp extends Activity implements OnClickListener,
 	private RadioButton radioButtonUi;
 	private RadioGroup radioGroup;
 	private DatagramSocket datagramSocket;
+	private CheckBox checkBoxNetwork;
+	private EditText editTextNetworkMinInterval;
+	private EditText editTextNetworkMinDistance;
+	private CheckBox checkBoxGps;
+	private EditText editTextGpsMinInterval;
+	private EditText editTextGpsMinDistance;
+	private EditText editTextLiteral;
+	private Button buttonLiteral;
+
 	// センサー情報取得カウンター
 	private int counterAccelerometer;
 	private int counterMagneticField;
 	private int counterOrientation;
+	private int counterNetwork;
+	private int counterGps;
 	private int counterLiteral;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		Button button_send_udp = (Button) this
-				.findViewById(R.id.ButtonSendToggle);
-		button_send_udp.setOnClickListener(this);
+	private LocationManager locationManager;
 
-		// スピナーの設定
-		// 現在スピナーは使っていませんのでこの部分は無意味です。
-		try {
-			Inet4Addresses inet4_addresses = new Inet4Addresses();
-			ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(this,
-					R.layout.spinner, inet4_addresses.getBroadcastAddresses());
-			// Spinner spinner = (Spinner)
-			// findViewById(R.id.SpinnerBroadcastAddress);
-			// spinner.setAdapter(array_adapter);
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			Log.v("SensorUdp#onCreate", "SocketException");
-		} catch (VerifyError e) {
-			Log.v("SensorUdp#onCreate", e.toString());
-		}
-
-		// センサー情報表示用ビューの取得
+	private void FindViews() {
+		editTextHost = (EditText) this.findViewById(R.id.EditTextHost);
+		editTextPort = (EditText) this.findViewById(R.id.EditTextPort);
 		textViewAccelerometer = (TextView) findViewById(R.id.TextViewAccelerometer);
 		textViewMagneticField = (TextView) findViewById(R.id.TextViewMagneticField);
 		textViewOrientation = (TextView) findViewById(R.id.TextViewOrientation);
-
 		checkBoxAccelerometer = (CheckBox) findViewById(R.id.CheckBoxAccelerometer);
+		checkBoxMagneticField = (CheckBox) findViewById(R.id.CheckBoxMagneticField);
+		checkBoxOrientation = (CheckBox) findViewById(R.id.CheckBoxOrientation);
+		radioButtonFastest = (RadioButton) findViewById(R.id.RadioButtonFastest);
+		radioButtonGame = (RadioButton) findViewById(R.id.RadioButtonGame);
+		radioButtonNormal = (RadioButton) findViewById(R.id.RadioButtonNormal);
+		radioButtonUi = (RadioButton) findViewById(R.id.RadioButtonUi);
+		radioGroup = (RadioGroup) findViewById(R.id.RadioGroupDelay);
+		checkBoxNetwork = (CheckBox) findViewById(R.id.CheckBoxNetwork);
+		editTextNetworkMinDistance = (EditText) findViewById(R.id.EditTextNetworkMinDistance);
+		editTextNetworkMinInterval = (EditText) findViewById(R.id.EditTextNetworkMinInterval);
+		checkBoxGps = (CheckBox) findViewById(R.id.CheckBoxGps);
+		editTextGpsMinDistance = (EditText)findViewById(R.id.EditTextGpsMinDistance);
+		editTextGpsMinInterval = (EditText)findViewById(R.id.EditTextGpsMinInterval);
+		editTextLiteral = (EditText) this.findViewById(R.id.EditTextLiteral);
+		buttonLiteral = (Button) this.findViewById(R.id.ButtonLiteral);
+	}
+
+	private void SetListeners() {
+		// 加速度センサーの使用可否が変更された場合
 		checkBoxAccelerometer
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -94,8 +108,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 						counterAccelerometer = 0;
 					}
 				});
-
-		checkBoxMagneticField = (CheckBox) findViewById(R.id.CheckBoxMagneticField);
+		// 磁気センサーの使用可否が変更された場合
 		checkBoxMagneticField
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -103,8 +116,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 						counterMagneticField = 0;
 					}
 				});
-
-		checkBoxOrientation = (CheckBox) findViewById(R.id.CheckBoxOrientation);
+		// 方向センサーの使用可否が変更された場合
 		checkBoxOrientation
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -113,13 +125,7 @@ public class SensorUdp extends Activity implements OnClickListener,
 						counterOrientation = 0;
 					}
 				});
-
-		// センサー情報取得頻度指定用ラジオボタンの取得
-		radioButtonFastest = (RadioButton) findViewById(R.id.RadioButtonFastest);
-		radioButtonGame = (RadioButton) findViewById(R.id.RadioButtonGame);
-		radioButtonNormal = (RadioButton) findViewById(R.id.RadioButtonNormal);
-		radioButtonUi = (RadioButton) findViewById(R.id.RadioButtonUi);
-		radioGroup = (RadioGroup) findViewById(R.id.RadioGroupDelay);
+		// 六軸センサー情報の取得頻度が変更された場合
 		radioGroup
 				.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 					public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -128,6 +134,87 @@ public class SensorUdp extends Activity implements OnClickListener,
 						Log.v("SensorUdp", "Delay changed");
 					}
 				});
+		// GPSによる測位の可否が変更された場合
+		checkBoxGps.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				counterGps = 0;
+				ChangeLocationProvider();
+			}
+		});
+		// GPSによる測位の最短移動距離が変更された場合
+		editTextGpsMinDistance
+				.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						counterGps = 0;
+						checkBoxGps.setChecked(false);
+						ChangeLocationProvider();
+						return true;
+					}
+				});
+		// GPSによる測位の最短時間間隔が変更された場合
+		editTextGpsMinInterval
+				.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						counterGps = 0;
+						checkBoxGps.setChecked(false);
+						ChangeLocationProvider();
+						return true;
+					}
+				});
+		// Networkを使った測位の可否が変更された場合
+		checkBoxNetwork
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						counterNetwork = 0;
+						ChangeLocationProvider();
+					}
+				});
+		// Networkによる測位の最短移動距離が変更された場合
+		editTextNetworkMinDistance
+				.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						counterNetwork = 0;
+						checkBoxNetwork.setChecked(false);
+						ChangeLocationProvider();
+						return true;
+					}
+				});
+		// Networkによる測位の最短時間間隔が変更された場合
+		editTextNetworkMinInterval
+				.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						counterNetwork = 0;
+						checkBoxNetwork.setChecked(false);
+						ChangeLocationProvider();
+						return true;
+					}
+				});
+		// 任意文字列の送信ボタンが押下された場合
+		buttonLiteral.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				SendLiteralByUdp();
+				Log.v("SensorUdp#onClick", "ButtonSendDebugMessage");
+			}
+		});
+	}
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		// ビューの取得
+		FindViews();
+
+		// ロケーションマネージャ生成
+		locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
 
 		// センサーマネージャーの生成
 		// 本物のセンターを使う場合
@@ -145,31 +232,21 @@ public class SensorUdp extends Activity implements OnClickListener,
 			// e.printStackTrace();
 			Log.v("SensorUdp#onCreate", e.toString());
 		}
-
+		// ビューへのイベントハンドラの設定
+		SetListeners();
 	}
 
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.ButtonSendToggle:
-			SendLiteralByUdp();
-			Log.v("SensorUdp#onClick", "ButtonSendDebugMessage");
-			break;
-		}
+	void ChangeLocationProvider() {
+		locationManager.removeUpdates(this);
 	}
 
 	private void SendLiteralByUdp() {
-		EditText edit_text_host = (EditText) this
-				.findViewById(R.id.EditTextHost);
-		Editable editable_host = edit_text_host.getEditableText();
+		Editable editable_host = editTextHost.getEditableText();
 		this.destination_host = editable_host.toString();
-		EditText edit_text_port = (EditText) this
-				.findViewById(R.id.EditTextPort);
-		Editable editable_port = edit_text_port.getEditableText();
+		Editable editable_port = editTextPort.getEditableText();
 		String string_port = editable_port.toString();
 		this.destination_port = Integer.parseInt(string_port);
-		EditText edit_text_debug_message = (EditText) this
-				.findViewById(R.id.EditTextDebugMessage);
-		Editable editable = edit_text_debug_message.getText();
+		Editable editable = editTextLiteral.getText();
 		String string_to_be_sent = editable.toString() + "\n";
 		++counterLiteral;
 		Date date = new Date();
@@ -276,5 +353,25 @@ public class SensorUdp extends Activity implements OnClickListener,
 		}
 			break;
 		}// switchの終わり
+	}
+
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+
 	}
 }
