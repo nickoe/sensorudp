@@ -237,6 +237,7 @@ public class SensorUdp extends Activity implements SensorListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		onRestoreInstanceState(savedInstanceState);
 		// ビューの取得
 		FindViews();
 
