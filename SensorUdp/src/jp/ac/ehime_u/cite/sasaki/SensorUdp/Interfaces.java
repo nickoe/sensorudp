@@ -2,7 +2,7 @@ package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
 import java.net.SocketException;
 
-import jp.ac.ehime_u.cite.sasaki.ReceiveUdp.Inet4Addresses;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,11 +20,5 @@ public class Interfaces extends Activity {
 				finish();
 			}
 		});
-		
-		try {
-			Inet4Addresses inet4_addresses = new Inet4Addresses();
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
 	}
 }

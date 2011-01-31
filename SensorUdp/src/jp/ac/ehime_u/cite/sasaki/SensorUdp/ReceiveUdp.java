@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import android.R.bool;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,6 +83,12 @@ public class ReceiveUdp extends Activity {
 		// クラス内クラスでスレッドオブジェクトを実装
 		// Thread オブジェクトを継承するか Runnable インターフェイスを実装する
 		class ReceiverThread extends Thread {
+			Handler handler;
+
+			public ReceiverThread(Handler handler){
+				super();
+				this.handler = handler;
+			}
 
 			public void run() {
 				// 受け付けるデータバッファとUDPパケットを作成
@@ -89,9 +96,7 @@ public class ReceiveUdp extends Activity {
 				DatagramPacket datagram_packet = new DatagramPacket(buffer,
 						buffer.length);
 
-				while (true) {
-					if (receiving == false)
-						break;
+				while (receiving == true) {
 					// UDPパケットを受信 ノンブロッキング処理にしたいが今はブロッキング処理
 					try {
 						datagram_socket.receive(datagram_packet);
@@ -115,12 +120,17 @@ public class ReceiveUdp extends Activity {
 					receivedLines.add("[" + sender_address + ":" + sender_port
 							+ "]" + received_data);
 
-					// テキストビューを更新
-					String s = new String(); // ストリームを使うほうがスマート
-					for (int i = receivedLines.size() - 1; i >= 0; --i) {
-						s = s + receivedLines.get(i) + "\n";
-					}
-					textViewReceivedLines.setText(s);
+					//匿名オブジェクトを使って擬似的なクロージャを実現するテクニック。
+					handler.post(new Runnable(){
+						public void run(){
+							// テキストビューを更新
+							String s = new String(); // ストリームを使うほうがスマート
+							for (int i = receivedLines.size() - 1; i >= 0; --i) {
+								s = s + receivedLines.get(i) + "\n";
+							}
+							textViewReceivedLines.setText(s);
+						}
+					});
 				}
 
 			}
@@ -128,7 +138,7 @@ public class ReceiveUdp extends Activity {
 
 		// スレッドオブジェクトを生成しスタート
 		receiving = true;
-		receiverThread = new ReceiverThread();
+		receiverThread = new ReceiverThread(new Handler());
 		receiverThread.start();
 	}
 
@@ -147,12 +157,12 @@ public class ReceiveUdp extends Activity {
 	}
 }
 
-// 次回 1人5分程度のプレゼンテーション
+// 次回 1人5分程度のプレゼンテーション（PowerPoint）
 // プレゼンテーションに含める内容
-// 
+//
 // 1. Android の構成（カーネル、ミドルウェア、DalvikVMなど）
-// 2. 今回作った SensorUdp の解説
-// 3. 何に使えそうか？
+// 2. 今回作った SensorUdp の作り方と動作の解説
+// 3. 発展させて何に使えそうか？
 // 4. 改良するとすればどんな点？
 // 5. 授業で興味を持てた点、持てなかった点
 // 6. 今後作ってみたいアプリケーションがあればアイディアを
