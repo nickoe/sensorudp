@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:id="@+id/linearLayout1"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/TextViewReceiveUdp"
+			android:text="Received CSV lines in UDP datagrams"></TextView>
+		<Button android:layout_width="wrap_content" android:text="test"
+			android:layout_gravity="center" android:id="@+id/ButtonReceiveUdp"
+			android:layout_height="wrap_content"></Button>
+	</LinearLayout>
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:id="@+id/textViewReceivedLines"
+		android:text="TextView"></TextView>
+</LinearLayout>

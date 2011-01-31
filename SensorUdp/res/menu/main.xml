@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="@+id/itemInterfaces"></item><item android:id="@+id/itemAbout" android:title="About" android:enabled="true" android:visible="true"></item>
+<item android:id="@+id/itemInterfaces" android:title="Interfaces"></item><item android:id="@+id/itemAbout" android:title="About" android:enabled="true" android:visible="true"></item>
 
+<item android:id="@+id/itemReceiveUdp" android:title="Receive"></item>
+<item android:id="@+id/itemSensorUdp" android:title="Main"></item>
 </menu>

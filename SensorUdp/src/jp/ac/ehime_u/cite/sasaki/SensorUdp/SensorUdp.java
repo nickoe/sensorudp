@@ -243,7 +243,7 @@ public class SensorUdp extends Activity implements SensorListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		if(savedInstanceState != null) {
+		if (savedInstanceState != null) {
 			onRestoreInstanceState(savedInstanceState);
 		}
 		// ビューの取得
@@ -539,12 +539,21 @@ public class SensorUdp extends Activity implements SensorListener,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case R.id.itemAbout:
-			Intent intent = new Intent(this, About.class);
-			startActivity(intent);
+		case R.id.itemAbout: {
+			Intent intent_about = new Intent(this, About.class);
+			startActivity(intent_about);
 			return true;
-		case R.id.itemInterfaces:
+		}
+		case R.id.itemReceiveUdp:{
+			Intent intent_receive_udp = new Intent(this, ReceiveUdp.class);
+			startActivity(intent_receive_udp);
 			return true;
+		}
+//		case R.id.itemInterfaces: {
+//			Intent intent_interfaces = new Intent(this, Interfaces.class);
+//			startActivity(intent_interfaces);
+//			return true;
+//		}
 		}
 		return false;
 	}
