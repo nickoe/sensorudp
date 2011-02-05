@@ -14,12 +14,13 @@ import android.widget.TextView;
 // クラス内クラスでスレッドオブジェクトを実装
 // Thread オブジェクトを継承するか Runnable インターフェイスを実装する
 class ReceiverThread extends Thread {
-	Handler handler;
+	volatile Handler handler;
 	volatile boolean toBeContinued;
 	DatagramSocket datagramSocket;
 	ArrayList<String> receivedLines;
 	static final int MAX_LINES = 100;
 	TextView textViewReceivedLines;
+	int port;
 
 	synchronized public void StopThread() throws InterruptedException {
 		toBeContinued = false;
@@ -28,6 +29,10 @@ class ReceiverThread extends Thread {
 			datagramSocket.close();
 		}
 	}
+	
+	public void SetHandler(Handler handler_) {
+		handler = handler_;
+	}
 
 	public ReceiverThread(Handler handler_, int port_, TextView text_view) {
 		super();
@@ -35,12 +40,7 @@ class ReceiverThread extends Thread {
 		this.toBeContinued = true;
 		this.textViewReceivedLines = text_view;
 		this.receivedLines = new ArrayList<String>();
-		try {
-			datagramSocket = new DatagramSocket(port_);
-		} catch (SocketException e) {
-			Log.e("ReceiverThread", "failed to open datagram socket.");
-			return;
-		}
+		this.port = port_;
 	}
 
 	public void run() {
@@ -51,6 +51,14 @@ class ReceiverThread extends Thread {
 
 		while (toBeContinued == true) {
 			// UDPパケットを受信 ノンブロッキング処理にしたいが今はブロッキング処理
+			if(datagramSocket == null) {
+				try {
+					datagramSocket = new DatagramSocket(this.port);
+				} catch (SocketException e) {
+					Log.e("ReceiverThread", "failed to open datagram socket.");
+					return;
+				}
+			}
 			try {
 				datagramSocket.receive(datagram_packet);
 			} catch (IOException e) {

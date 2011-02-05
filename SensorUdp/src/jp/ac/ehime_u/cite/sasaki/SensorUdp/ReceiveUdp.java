@@ -6,8 +6,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,7 +25,6 @@ import android.widget.TextView;
 //  メインスレッドとは別のスレッドで受信するようにしましょう。
 //  UDPパケットの受信とUDPデータグラムからのデータの取り出しは
 //  ReceiveUdp プロジェクトの RecieveUdp.java を参考にしてください。
-
 
 // 解答例
 //  実はまだ途中。マルチスレッドを使ったコードを解説します。
@@ -61,10 +64,23 @@ public class ReceiveUdp extends Activity {
 			}
 		});
 
-
 		// スレッドオブジェクトを生成しスタート
-		receiverThread = new ReceiverThread(new Handler(), PORT, textViewReceivedLines);
+		receiverThread = new ReceiverThread(new Handler(), PORT,
+				textViewReceivedLines);
 		receiverThread.start();
+	}
+	
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		receiverThread.SetHandler(new Handler());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		receiverThread.SetHandler(new Handler());
 	}
 
 	@Override
@@ -77,6 +93,27 @@ public class ReceiveUdp extends Activity {
 		}
 		receiverThread.interrupt();
 		receiverThread = null;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater menu_infrator = getMenuInflater();
+		menu_infrator.inflate(R.menu.receiveudp, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.itemReceiveUdpToSensorUdp: {
+			Intent intent = new Intent(this, SensorUdp.class);
+			startActivity(intent);
+			return true;
+		}
+		}
+		return false;
 	}
 }
 

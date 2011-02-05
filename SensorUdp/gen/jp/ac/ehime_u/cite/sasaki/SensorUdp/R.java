@@ -60,6 +60,7 @@ public final class R {
         public static final int itemAbout=0x7f06002e;
         public static final int itemInterfaces=0x7f06002d;
         public static final int itemReceiveUdp=0x7f06002f;
+        public static final int itemReceiveUdpToSensorUdp=0x7f060031;
         public static final int itemSensorUdp=0x7f060030;
         public static final int linearLayout1=0x7f060029;
         public static final int textViewReceivedLines=0x7f06002c;
@@ -72,6 +73,7 @@ public final class R {
     }
     public static final class menu {
         public static final int main=0x7f050000;
+        public static final int receiveudp=0x7f050001;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
