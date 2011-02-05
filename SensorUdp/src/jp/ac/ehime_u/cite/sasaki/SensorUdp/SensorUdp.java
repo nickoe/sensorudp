@@ -7,10 +7,14 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -37,7 +41,7 @@ import android.widget.TextView.BufferType;
 import android.widget.TextView.OnEditorActionListener;
 
 @SuppressWarnings("deprecation")
-public class SensorUdp extends Activity implements SensorListener,
+public class SensorUdp extends Activity implements SensorEventListener,
 		LocationListener {
 	private String destination_host;
 	private int destination_port;
@@ -388,9 +392,33 @@ public class SensorUdp extends Activity implements SensorListener,
 		} else {
 			sensor_delay = SensorManager.SENSOR_DELAY_UI;
 		}
-		sensorManager.registerListener(this, SensorManager.SENSOR_ACCELEROMETER
-				| SensorManager.SENSOR_MAGNETIC_FIELD
-				| SensorManager.SENSOR_ORIENTATION, sensor_delay);
+		try {
+			List<Sensor> accelerometer_sensors = sensorManager
+					.getSensorList(Sensor.TYPE_ACCELEROMETER);
+			sensorManager.registerListener(this, accelerometer_sensors.get(0),
+					sensor_delay);
+		} catch (IndexOutOfBoundsException e) {
+			this.checkBoxAccelerometer.setChecked(false);
+			this.checkBoxAccelerometer.setClickable(false);
+		}
+		try {
+			List<Sensor> magnetic_field_sensors = sensorManager
+					.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
+			sensorManager.registerListener(this, magnetic_field_sensors.get(0),
+					sensor_delay);
+		} catch (IndexOutOfBoundsException e) {
+			this.checkBoxMagneticField.setChecked(false);
+			this.checkBoxMagneticField.setClickable(false);
+		}
+		try {
+			List<Sensor> orientation_sensors = sensorManager
+					.getSensorList(Sensor.TYPE_ORIENTATION);
+			sensorManager.registerListener(this, orientation_sensors.get(0),
+					sensor_delay);
+		} catch (IndexOutOfBoundsException e) {
+			this.checkBoxOrientation.setChecked(false);
+			this.checkBoxOrientation.setClickable(false);
+		}
 		// SensorManager.SENSOR_DELAY_FASTEST 最高速度
 		// SensorManager.SENSOR_DELAY_GAME ゲーム速度
 		// SensorManager.SENSOR_DELAY_NORMAL 通常速度
@@ -401,57 +429,54 @@ public class SensorUdp extends Activity implements SensorListener,
 		sensorManager.unregisterListener(this);
 	}
 
-	public void onAccuracyChanged(int i, int j) {
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
 	}
+
+	// public void onAccuracyChanged(int i, int j) {
+	// }
 
 	// 10進数固定小数点表示するためのフォーマットを行うクラス DecimalFormat
 	private static final DecimalFormat decimal_format = new DecimalFormat(
 			"000.0000000");
 
-	public void onSensorChanged(int sensor, float[] values) {
-		switch (sensor) {
-		case SensorManager.SENSOR_ACCELEROMETER: {
+	public void onSensorChanged(SensorEvent sensor_event) {
+		// public void onSensorChanged(int sensor, float[] values) {
+		if (sensor_event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			if (checkBoxAccelerometer.isChecked()) {
 				// 加速度センサーの値を表示
 				Date date = new Date();
 				String accelerometer_cvs_line = "A, " + ++counterAccelerometer
 						+ ", " + date.getTime() + ", "
-						+ decimal_format.format(values[0]) + ", "
-						+ decimal_format.format(values[1]) + ", "
-						+ decimal_format.format(values[2]);
+						+ decimal_format.format(sensor_event.values[0]) + ", "
+						+ decimal_format.format(sensor_event.values[1]) + ", "
+						+ decimal_format.format(sensor_event.values[2]);
 				textViewAccelerometer.setText(accelerometer_cvs_line);
 				SendMessageByUdp(accelerometer_cvs_line + "\n");
 			}
-		}
-			break;
-		case SensorManager.SENSOR_MAGNETIC_FIELD: {
+		} else if (sensor_event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 			if (checkBoxMagneticField.isChecked()) {
 				// 磁気センサーの値を表示
 				Date date = new Date();
 				String magnetic_field_cvs_line = "M, " + ++counterMagneticField
 						+ ", " + date.getTime() + ", "
-						+ decimal_format.format(values[0]) + ", "
-						+ decimal_format.format(values[1]) + ", "
-						+ decimal_format.format(values[2]);
+						+ decimal_format.format(sensor_event.values[0]) + ", "
+						+ decimal_format.format(sensor_event.values[1]) + ", "
+						+ decimal_format.format(sensor_event.values[2]);
 				textViewMagneticField.setText(magnetic_field_cvs_line);
 				SendMessageByUdp(magnetic_field_cvs_line + "\n");
 			}
-		}
-			break;
-		case SensorManager.SENSOR_ORIENTATION: {
+		} else if (sensor_event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
 			if (checkBoxOrientation.isChecked()) {
 				Date date = new Date();
 				String orientation_cvs_line = "O, " + ++counterOrientation
 						+ ", " + date.getTime() + ", "
-						+ decimal_format.format(values[0]) + ", "
-						+ decimal_format.format(values[1]) + ", "
-						+ decimal_format.format(values[2]);
+						+ decimal_format.format(sensor_event.values[0]) + ", "
+						+ decimal_format.format(sensor_event.values[1]) + ", "
+						+ decimal_format.format(sensor_event.values[2]);
 				textViewOrientation.setText(orientation_cvs_line);
 				SendMessageByUdp(orientation_cvs_line + "\n");
 			}
 		}
-			break;
-		}// switchの終わり
 	}
 
 	public void onLocationChanged(Location location) {
@@ -544,17 +569,18 @@ public class SensorUdp extends Activity implements SensorListener,
 			startActivity(intent_about);
 			return true;
 		}
-		case R.id.itemReceiveUdp:{
+		case R.id.itemReceiveUdp: {
 			Intent intent_receive_udp = new Intent(this, ReceiveUdp.class);
 			startActivity(intent_receive_udp);
 			return true;
 		}
-//		case R.id.itemInterfaces: {
-//			Intent intent_interfaces = new Intent(this, Interfaces.class);
-//			startActivity(intent_interfaces);
-//			return true;
-//		}
+			// case R.id.itemInterfaces: {
+			// Intent intent_interfaces = new Intent(this, Interfaces.class);
+			// startActivity(intent_interfaces);
+			// return true;
+			// }
 		}
 		return false;
 	}
+
 }
