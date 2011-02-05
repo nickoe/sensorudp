@@ -65,32 +65,13 @@ public class ReceiveUdp extends Activity {
 		});
 
 		// スレッドオブジェクトを生成しスタート
-		receiverThread = new ReceiverThread(new Handler(), PORT,
-				textViewReceivedLines);
-		receiverThread.start();
-	}
-	
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		receiverThread.SetHandler(new Handler());
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		receiverThread.SetHandler(new Handler());
+		receiverThread = ReceiverThread.GetSingleton();
+		receiverThread.start(new Handler(), PORT, textViewReceivedLines);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		try {
-			receiverThread.StopThread();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		receiverThread.interrupt();
 		receiverThread = null;
 	}

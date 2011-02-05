@@ -22,25 +22,49 @@ class ReceiverThread extends Thread {
 	TextView textViewReceivedLines;
 	int port;
 
-	synchronized public void StopThread() throws InterruptedException {
+	static ReceiverThread receiverThread;
+
+	// シングルトンインスタンスを返すスタティックメソッド
+	static public ReceiverThread GetSingleton() {
+		if (receiverThread == null) {
+			receiverThread = new ReceiverThread();
+		} else if (receiverThread.isInterrupted()) {
+			receiverThread = null;
+			receiverThread = new ReceiverThread();
+		}
+		return receiverThread;
+	}
+
+	public void interrupt() {
 		toBeContinued = false;
-		Thread.sleep(1000);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (datagramSocket != null) {
 			datagramSocket.close();
 		}
-	}
-	
-	public void SetHandler(Handler handler_) {
-		handler = handler_;
+		super.interrupt();
 	}
 
-	public ReceiverThread(Handler handler_, int port_, TextView text_view) {
-		super();
-		this.handler = handler_;
+	// コンストラクタを隠蔽しているので初期化はこのメソッドで行う
+	public void start(Handler handler_, int port_, TextView text_view) {
 		this.toBeContinued = true;
-		this.textViewReceivedLines = text_view;
-		this.receivedLines = new ArrayList<String>();
+		this.handler = handler_;
 		this.port = port_;
+		this.textViewReceivedLines = text_view;
+		if(!this.isAlive()){
+			super.start();
+		}
+	}
+
+	// シングルトンインスタンスを生成したいのでコンストラクタはプライベート
+	ReceiverThread() {
+		super();
+		this.toBeContinued = true;
+		this.receivedLines = new ArrayList<String>();
 	}
 
 	public void run() {
@@ -51,7 +75,7 @@ class ReceiverThread extends Thread {
 
 		while (toBeContinued == true) {
 			// UDPパケットを受信 ノンブロッキング処理にしたいが今はブロッキング処理
-			if(datagramSocket == null) {
+			if (datagramSocket == null) {
 				try {
 					datagramSocket = new DatagramSocket(this.port);
 				} catch (SocketException e) {
@@ -91,6 +115,5 @@ class ReceiverThread extends Thread {
 				}
 			});
 		}
-
 	}
 }
