@@ -34,6 +34,7 @@ class ReceiverThread extends Thread {
 		this.handler = handler_;
 		this.toBeContinued = true;
 		this.textViewReceivedLines = text_view;
+		this.receivedLines = new ArrayList<String>();
 		try {
 			datagramSocket = new DatagramSocket(port_);
 		} catch (SocketException e) {
