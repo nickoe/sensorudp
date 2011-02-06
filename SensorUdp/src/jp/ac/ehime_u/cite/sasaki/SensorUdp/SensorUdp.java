@@ -270,11 +270,11 @@ public class SensorUdp extends Activity implements SensorEventListener,
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		if (outState == null) return;
 		Log.v("SensorUdp#onSaveInstanceState", "saving " + editTextHost.toString());
 		outState.putString(editTextHost.toString(), editTextHost.getText().toString());
 		outState.putString(editTextPort.toString(), editTextPort.getText().toString());
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
