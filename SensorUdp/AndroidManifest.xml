@@ -4,7 +4,8 @@
 	android:versionCode="143">
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".SensorUdp" android:label="@string/app_name"
-			android:screenOrientation="portrait">
+			android:screenOrientation="portrait"
+			android:launchMode="singleInstance">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -13,7 +14,8 @@
 
 		<activity android:name="About"></activity>
 		<activity android:name="Interfaces"></activity>
-		<activity android:name="ReceiveUdp"></activity>
+		<activity android:name="ReceiveUdp" android:launchMode="singleInstance">
+		</activity>
 
 	</application>
 	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4" />

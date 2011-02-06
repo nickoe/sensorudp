@@ -49,13 +49,18 @@ class ReceiverThread extends Thread {
 		super.interrupt();
 	}
 
+	@Override
+	public void start(){
+		Log.e("ReceiverThread#start", "unexpected arguments");
+	}
+	
 	// コンストラクタを隠蔽しているので初期化はこのメソッドで行う
 	public void start(Handler handler_, int port_, TextView text_view) {
-		this.toBeContinued = true;
-		this.handler = handler_;
-		this.port = port_;
 		this.textViewReceivedLines = text_view;
+		this.toBeContinued = true;
 		if(!this.isAlive()){
+			this.handler = handler_;
+			this.port = port_;
 			super.start();
 		}
 	}
