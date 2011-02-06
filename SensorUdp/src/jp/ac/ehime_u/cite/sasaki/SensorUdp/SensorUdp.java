@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -40,7 +39,6 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.TextView.OnEditorActionListener;
 
-@SuppressWarnings("deprecation")
 public class SensorUdp extends Activity implements SensorEventListener,
 		LocationListener {
 	private String destination_host;

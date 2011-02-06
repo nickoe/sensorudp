@@ -51,7 +51,7 @@ public class ReceiveUdp extends Activity {
 				DatagramSocket datagramSocket;
 				try {
 					datagramSocket = new DatagramSocket();
-					byte[] byte_array = "aaaa".getBytes();
+					byte[] byte_array = "test message from ReceiveUdp activity".getBytes();
 					InetAddress inet_address = InetAddress
 							.getByName("127.0.0.1");
 					DatagramPacket datagram_packet = new DatagramPacket(
