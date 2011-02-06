@@ -246,12 +246,8 @@ public class SensorUdp extends Activity implements SensorEventListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		if (savedInstanceState != null) {
-			onRestoreInstanceState(savedInstanceState);
-		}
-		// ビューの取得
-		FindViews();
+		setContentView(R.layout.main); // ビューの生成
+		FindViews(); // ビューの取得
 
 		// ロケーションマネージャ生成
 		locationManager = (LocationManager) this
@@ -275,27 +271,25 @@ public class SensorUdp extends Activity implements SensorEventListener,
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.d("SensorUdp", "onSaveInstanceState");
-		outState.putString("editTextHost", editTextHost.getEditableText()
-				.toString());
-		outState.putString("editTextPort", editTextPort.getEditableText()
-				.toString());
-		outState.putString("editTextGpsMinDistance", editTextGpsMinDistance
-				.getEditableText().toString());
+		if (outState == null) return;
+		Log.v("SensorUdp#onSaveInstanceState", "saving " + editTextHost.toString());
+		outState.putString(editTextHost.toString(), editTextHost.getText().toString());
+		outState.putString(editTextPort.toString(), editTextPort.getText().toString());
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		Log.d("SensorUdp", "onRestoreInstanceState");
-		String edit_text_host = savedInstanceState.getString("editTextHost");
+		if (savedInstanceState == null) return;
+		Log.v("SensorUdp#onRestoreInstanceState", "restoring "+editTextHost.toString());
+		String edit_text_host = savedInstanceState.getString(editTextHost.toString());
 		if (edit_text_host != null) {
 			editTextHost.setText(edit_text_host, BufferType.EDITABLE);
 		}
-		String edit_text_port = savedInstanceState.getString("editTextPort");
+		String edit_text_port = savedInstanceState.getString(editTextPort.toString());
 		if (edit_text_port != null) {
 			editTextPort.setText(edit_text_port, BufferType.EDITABLE);
-		}
+		}		
 	}
 
 	void ChangeDestination() {
