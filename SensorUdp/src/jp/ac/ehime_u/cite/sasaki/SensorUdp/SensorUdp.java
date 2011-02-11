@@ -15,7 +15,7 @@ public class SensorUdp extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main); // ビューの生成
+		setContentView(R.layout.sensor_udp); // ビューの生成
 
 		mySensorEventListener = MySensorEventListener.GetSingleton(this);
 		myLocationListener = MyLocationListener.GetSingleton(this);
@@ -46,7 +46,7 @@ public class SensorUdp extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater menu_infrator = getMenuInflater();
-		menu_infrator.inflate(R.menu.main, menu);
+		menu_infrator.inflate(R.menu.common, menu);
 		return true;
 	}
 

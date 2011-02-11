@@ -120,7 +120,7 @@ public class TransmissionSettings extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater menu_infrator = getMenuInflater();
-		menu_infrator.inflate(R.menu.main, menu);
+		menu_infrator.inflate(R.menu.common, menu);
 		return true;
 	}
 
