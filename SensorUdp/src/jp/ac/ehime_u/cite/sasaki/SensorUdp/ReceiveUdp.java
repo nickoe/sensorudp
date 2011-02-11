@@ -1,40 +1,34 @@
-// システムデザイン 第14回 2011年1月31日
-
 package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
-
-// 前回の課題
-//  このアクティビティで、
-//  受信したUDPパケットの内容を逐次表示するようにして下さい。
-//  最新100行程度表示出来ればOKです。
-//  他のアクティビティの表示中にも受信できるよう、
-//  メインスレッドとは別のスレッドで受信するようにしましょう。
-//  UDPパケットの受信とUDPデータグラムからのデータの取り出しは
-//  ReceiveUdp プロジェクトの RecieveUdp.java を参考にしてください。
-
-// 解答例
-//  実はまだ途中。マルチスレッドを使ったコードを解説します。
-//  授業中に解説しながら一緒に仕上げて行こうと思います。
+import android.widget.TextView.BufferType;
+import android.widget.TextView.OnEditorActionListener;
 
 public class ReceiveUdp extends Activity {
 
-	private TextView textViewReceivedLines; // 受信した行を表示するビュー
-	private ReceiverThread receiverThread; // 受信スレッド
-	private static final int PORT = 12345; // 受信するUDPポート番号（定数）
+	TextView textViewReceivedLines; // 受信した行を表示するビュー
+	ReceiverThread receiverThread; // 受信スレッド
+	EditText editTextLiteral;
+	EditText editTextHost;
+	EditText editTextPort;
+	int counterLiteral;
+	Button buttonLiteral;
+	SenderThread senderThread;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,31 +36,77 @@ public class ReceiveUdp extends Activity {
 
 		// テキストビューを取得しておく
 		textViewReceivedLines = (TextView) findViewById(R.id.textViewReceivedLines);
+		editTextLiteral = (EditText) this.findViewById(R.id.EditTextLiteral);
 
-		// 匿名オブジェクトを使ってクロージャっぽくイベントハンドラを実装
-		Button b = (Button) findViewById(R.id.ButtonReceiveUdp);
-		b.setOnClickListener(new OnClickListener() {
+		// 任意文字列の送信ボタンが押下された場合
+		buttonLiteral = (Button) this.findViewById(R.id.ButtonLiteral);
+		buttonLiteral.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// finish();
-				DatagramSocket datagramSocket;
-				try {
-					datagramSocket = new DatagramSocket();
-					byte[] byte_array = "test message from ReceiveUdp activity".getBytes();
-					InetAddress inet_address = InetAddress
-							.getByName("127.0.0.1");
-					DatagramPacket datagram_packet = new DatagramPacket(
-							byte_array, byte_array.length, inet_address, 12345);
-					// DatagramSocket datagram_socket = new DatagramSocket();
-					datagramSocket.send(datagram_packet);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				++counterLiteral;
+				Date date = new Date();
+				senderThread.SendMessageByUdp("D, " + counterLiteral + ", "
+						+ date.getTime() + ", "
+						+ editTextLiteral.getText().toString());
 			}
 		});
 
+		// 送信先IPアドレスが変更された時にはパケット送出を停止
+		editTextHost = (EditText) findViewById(R.id.EditTextHost);
+		editTextHost.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView textview, int i,
+					KeyEvent keyevent) {
+				MySensorEventListener.GetSingleton().UncheckAll();
+				MyLocationListener.GetSingleton().UncheckAll();
+				try {
+					SenderThread.GetSingleton(editTextHost.getEditableText()
+							.toString(), Integer.parseInt(editTextPort
+							.getEditableText().toString()));
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SocketException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+		// 送信先ポートが変更された時にはパケット送出を停止
+		editTextPort = (EditText) findViewById(R.id.EditTextPort);
+		editTextPort.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView textview, int i,
+					KeyEvent keyevent) {
+				MySensorEventListener.GetSingleton().UncheckAll();
+				MyLocationListener.GetSingleton().UncheckAll();
+				try {
+					SenderThread.GetSingleton(editTextHost.getEditableText()
+							.toString(), Integer.parseInt(editTextPort
+							.getEditableText().toString()));
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SocketException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+
+		try {
+			senderThread = SenderThread.GetSingleton(editTextHost
+					.getEditableText().toString(), Integer
+					.parseInt(editTextPort.getEditableText().toString()));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// スレッドオブジェクトを生成しスタート
-		receiverThread = ReceiverThread.GetSingleton();
-		receiverThread.start(new Handler(), PORT, textViewReceivedLines);
+		receiverThread = ReceiverThread.GetSingleton(this);
+		receiverThread.start(new Handler());
 	}
 
 	@Override
@@ -96,15 +136,30 @@ public class ReceiveUdp extends Activity {
 		}
 		return false;
 	}
-}
 
-// 次回 1人5分程度のプレゼンテーション（PowerPoint）
-// プレゼンテーションに含める内容
-//
-// 1. Android の構成（カーネル、ミドルウェア、DalvikVMなど）
-// 2. 今回作った SensorUdp の作り方と動作の解説
-// 3. 発展させて何に使えそうか？
-// 4. 改良するとすればどんな点？
-// 5. 授業で興味を持てた点、持てなかった点
-// 6. 今後作ってみたいアプリケーションがあればアイディアを
-//
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (outState == null)
+			return;
+		outState.putString(editTextHost.toString(), editTextHost.getText()
+				.toString());
+		outState.putString(editTextPort.toString(), editTextPort.getText()
+				.toString());
+	}
+
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		if (savedInstanceState == null)
+			return;
+		String edit_text_host = savedInstanceState.getString(editTextHost
+				.toString());
+		if (edit_text_host != null) {
+			editTextHost.setText(edit_text_host, BufferType.EDITABLE);
+		}
+		String edit_text_port = savedInstanceState.getString(editTextPort
+				.toString());
+		if (edit_text_port != null) {
+			editTextPort.setText(edit_text_port, BufferType.EDITABLE);
+		}
+	}
+}

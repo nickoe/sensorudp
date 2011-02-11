@@ -2,22 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical">
-	<!-- <TextView android:text="@string/hello" android:layout_width="fill_parent"
+	<!-- <TextView android:text="@string/hello" android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" android:id="@+id/TextViewHello"></TextView> -->
-	<LinearLayout android:id="@+id/LinearLayoutHost"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:orientation="horizontal">
-		<TextView android:text="dest. host" android:id="@+id/TextView01"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<EditText android:layout_height="wrap_content"
-			android:focusable="true" android:text="127.0.0.1" android:id="@+id/EditTextHost"
-			android:layout_width="wrap_content"></EditText>
-		<TextView android:layout_height="wrap_content" android:text="port"
-			android:layout_width="wrap_content" android:id="@+id/TextViewPort"></TextView>
-		<EditText android:layout_height="wrap_content" android:text="12345"
-			android:id="@+id/EditTextPort" android:layout_width="wrap_content"></EditText>
-
-	</LinearLayout>
 
 	<LinearLayout android:id="@+id/LinearLayoutAccelerometer"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
@@ -34,10 +20,6 @@
 			android:id="@+id/CheckBoxMagneticField"></CheckBox>
 		<TextView android:text="magnetic field cvs line" android:id="@+id/TextViewMagneticField"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-
-
-
 	</LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayoutOrientation"
 		android:layout_width="wrap_content" android:layout_height="wrap_content">
@@ -98,13 +80,4 @@
 	</LinearLayout>
 	<TextView android:layout_height="wrap_content" android:text="location by GPS cvs line"
 		android:layout_width="fill_parent" android:id="@+id/TextViewGps"></TextView>
-	<LinearLayout android:id="@+id/LinearLayoutLiteral"
-		android:orientation="horizontal" android:layout_width="wrap_content"
-		android:layout_height="wrap_content">
-		<EditText android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:text="text to transmit"
-			android:id="@+id/EditTextLiteral"></EditText>
-		<Button android:text="send" android:layout_width="wrap_content"
-			android:id="@+id/ButtonLiteral" android:layout_height="wrap_content"></Button>
-	</LinearLayout>
 </LinearLayout>

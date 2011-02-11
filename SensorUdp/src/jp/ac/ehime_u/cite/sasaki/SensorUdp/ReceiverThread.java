@@ -7,8 +7,10 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 // クラス内クラスでスレッドオブジェクトを実装
@@ -21,20 +23,41 @@ class ReceiverThread extends Thread {
 	static final int MAX_LINES = 100;
 	TextView textViewReceivedLines;
 	int port;
+	Activity activity;
+	EditText editTextIncomingPort;
 
 	static ReceiverThread receiverThread;
+	static boolean inGetSingleton;
+
+	// シングルトンインスタンスを生成したいのでコンストラクタはプライベート
+	ReceiverThread() {
+		super();
+		this.port = 12345;
+		this.toBeContinued = true;
+		this.receivedLines = new ArrayList<String>();
+	}
 
 	// シングルトンインスタンスを返すスタティックメソッド
-	static public ReceiverThread GetSingleton() {
+	static public ReceiverThread GetSingleton(Activity activity_) {
+		inGetSingleton = true;
 		if (receiverThread == null) {
 			receiverThread = new ReceiverThread();
-		} else if (receiverThread.isInterrupted()) {
-			receiverThread = null;
-			receiverThread = new ReceiverThread();
 		}
+		receiverThread.activity = activity_;
+		receiverThread.SetActivity();
+		inGetSingleton = false;
+		return receiverThread;
+	}	
+	
+	synchronized public ReceiverThread GetSingleton(){
+		if (inGetSingleton) throw new ExceptionInInitializerError();
 		return receiverThread;
 	}
 
+	void SetActivity(){
+		textViewReceivedLines = (TextView) activity.findViewById(R.id.textViewReceivedLines);
+		editTextIncomingPort = (EditText) activity.findViewById(R.id.editTextIncomingPort);
+	}
 	public void interrupt() {
 		toBeContinued = false;
 		try {
@@ -55,21 +78,12 @@ class ReceiverThread extends Thread {
 	}
 	
 	// コンストラクタを隠蔽しているので初期化はこのメソッドで行う
-	public void start(Handler handler_, int port_, TextView text_view) {
-		this.textViewReceivedLines = text_view;
+	public void start(Handler handler_) {
 		this.toBeContinued = true;
 		if(!this.isAlive()){
 			this.handler = handler_;
-			this.port = port_;
 			super.start();
 		}
-	}
-
-	// シングルトンインスタンスを生成したいのでコンストラクタはプライベート
-	ReceiverThread() {
-		super();
-		this.toBeContinued = true;
-		this.receivedLines = new ArrayList<String>();
 	}
 
 	public void run() {
