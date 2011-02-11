@@ -11,7 +11,6 @@ public class SensorUdp extends Activity {
 	MySensorEventListener mySensorEventListener;
 	MyLocationListener myLocationListener;
 
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,23 +54,22 @@ public class SensorUdp extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case R.id.itemAbout: {
-			Intent intent_about = new Intent(this, About.class);
-			startActivity(intent_about);
+		case R.id.itemSensorSettings: {
+			Intent intent = new Intent(this, SensorUdp.class);
+			startActivity(intent);
 			return true;
 		}
-		case R.id.itemReceiveUdp: {
-			Intent intent_receive_udp = new Intent(this, ReceiveUdp.class);
-			startActivity(intent_receive_udp);
+		case R.id.itemTransmissionSettings:{
+			Intent intent = new Intent(this, TransmissionSettings.class);
+			startActivity(intent);
 			return true;
 		}
-			// case R.id.itemInterfaces: {
-			// Intent intent_interfaces = new Intent(this, Interfaces.class);
-			// startActivity(intent_interfaces);
-			// return true;
-			// }
+		case R.id.itemAbout:{
+			Intent intent = new Intent(this, About.class);
+			startActivity(intent);
+			return true;
+		}
 		}
 		return false;
 	}
-
 }

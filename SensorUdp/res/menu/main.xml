@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:id="@+id/itemInterfaces" android:title="Interfaces"></item><item android:id="@+id/itemAbout" android:title="About" android:enabled="true" android:visible="true"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:title="Sensor" android:id="@+id/itemSensorSettings"></item>
+	<item android:title="Transmission" android:id="@+id/itemTransmissionSettings"></item>
+	<item android:id="@+id/itemAbout" android:title="About"
+		android:enabled="true" android:visible="true"></item>
 
-<item android:id="@+id/itemReceiveUdp" android:title="Receive"></item>
-<item android:id="@+id/itemSensorUdp" android:title="Main"></item>
+
+
 </menu>

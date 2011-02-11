@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.TextView.OnEditorActionListener;
 
-public class ReceiveUdp extends Activity {
+public class TransmissionSettings extends Activity {
 
 	TextView textViewReceivedLines; // 受信した行を表示するビュー
 	ReceiverThread receiverThread; // 受信スレッド
@@ -32,7 +32,7 @@ public class ReceiveUdp extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.receiveudp);
+		setContentView(R.layout.transmission_settings);
 
 		// テキストビューを取得しておく
 		textViewReceivedLines = (TextView) findViewById(R.id.textViewReceivedLines);
@@ -120,7 +120,7 @@ public class ReceiveUdp extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater menu_infrator = getMenuInflater();
-		menu_infrator.inflate(R.menu.receiveudp, menu);
+		menu_infrator.inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -128,8 +128,18 @@ public class ReceiveUdp extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case R.id.itemReceiveUdpToSensorUdp: {
+		case R.id.itemSensorSettings: {
 			Intent intent = new Intent(this, SensorUdp.class);
+			startActivity(intent);
+			return true;
+		}
+		case R.id.itemTransmissionSettings:{
+			Intent intent = new Intent(this, TransmissionSettings.class);
+			startActivity(intent);
+			return true;
+		}
+		case R.id.itemAbout:{
+			Intent intent = new Intent(this, About.class);
 			startActivity(intent);
 			return true;
 		}

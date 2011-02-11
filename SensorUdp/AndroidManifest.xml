@@ -12,8 +12,7 @@
 		</activity>
 
 		<activity android:name="About"></activity>
-		<activity android:name="Interfaces"></activity>
-		<activity android:name="ReceiveUdp" android:launchMode="singleInstance">
+		<activity android:name="TransmissionSettings" android:launchMode="singleInstance">
 		</activity>
 
 	</application>
