@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -78,6 +80,12 @@ class ReceiverThread extends Thread {
 						return true;
 					}
 				});
+		editTextIncomingPort.setOnFocusChangeListener(new OnFocusChangeListener() {			
+			public void onFocusChange(View v, boolean hasFocus) {
+				ChangeIncomingPort(Integer.parseInt(editTextIncomingPort.getText()
+						.toString()));
+			}
+		});
 		editTextIncomingPort.onEditorAction(EditorInfo.IME_NULL);
 	}
 

@@ -18,7 +18,7 @@
 			<TextView android:layout_height="wrap_content" android:text="dest. port"
 				android:layout_width="wrap_content" android:id="@+id/TextViewPort"></TextView>
 			<EditText android:layout_height="wrap_content" android:text="12345"
-				android:id="@+id/EditTextPort" android:layout_width="wrap_content"></EditText>
+				android:id="@+id/EditTextPort" android:layout_width="wrap_content" android:imeOptions="flagNoEnterAction|flagNoExtractUi"></EditText>
 
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayoutLiteral"
@@ -42,7 +42,7 @@
 				android:layout_width="wrap_content" android:id="@+id/textView1"
 				android:layout_height="wrap_content"></TextView>
 			<EditText android:text="12345" android:layout_width="fill_parent"
-	android:id="@+id/editTextIncomingPort" android:layout_height="wrap_content"></EditText>
+	android:id="@+id/editTextIncomingPort" android:layout_height="wrap_content" android:imeOptions="flagNoEnterAction|flagNoExtractUi"></EditText>
 		</LinearLayout>
 		<TextView android:layout_width="fill_parent" android:id="@+id/textViewReceivedLines"
 			android:layout_height="wrap_content" android:text="Here received packets appears ..."></TextView>
