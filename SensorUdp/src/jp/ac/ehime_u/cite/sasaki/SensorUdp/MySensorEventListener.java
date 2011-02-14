@@ -61,42 +61,44 @@ public class MySensorEventListener implements SensorEventListener {
 			mySensorEventListener = new MySensorEventListener();
 		}
 		mySensorEventListener.activity = activity_;
-		mySensorEventListener.FindViews();
-		mySensorEventListener.SetListeners();
+		mySensorEventListener.FindViews(activity_);
+		mySensorEventListener.SetListeners(activity_);
 		inGetSingleton = false;
 		return mySensorEventListener;
 	}
 
 	synchronized public static MySensorEventListener GetSingleton() {
-		if (inGetSingleton) throw new ExceptionInInitializerError();
+		if (inGetSingleton)
+			throw new ExceptionInInitializerError();
 		return mySensorEventListener;
 	}
 
-	void FindViews() {
-		textViewAccelerometer = (TextView) activity
+	void FindViews(Activity activity_) {
+		textViewAccelerometer = (TextView) activity_
 				.findViewById(R.id.TextViewAccelerometer);
-		textViewMagneticField = (TextView) activity
+		textViewMagneticField = (TextView) activity_
 				.findViewById(R.id.TextViewMagneticField);
-		textViewOrientation = (TextView) activity
+		textViewOrientation = (TextView) activity_
 				.findViewById(R.id.TextViewOrientation);
-		checkBoxAccelerometer = (CheckBox) activity
+		checkBoxAccelerometer = (CheckBox) activity_
 				.findViewById(R.id.CheckBoxAccelerometer);
-		checkBoxMagneticField = (CheckBox) activity
+		checkBoxMagneticField = (CheckBox) activity_
 				.findViewById(R.id.CheckBoxMagneticField);
-		checkBoxOrientation = (CheckBox) activity
+		checkBoxOrientation = (CheckBox) activity_
 				.findViewById(R.id.CheckBoxOrientation);
-		radioButtonFastest = (RadioButton) activity
+		radioButtonFastest = (RadioButton) activity_
 				.findViewById(R.id.RadioButtonFastest);
-		radioButtonGame = (RadioButton) activity
+		radioButtonGame = (RadioButton) activity_
 				.findViewById(R.id.RadioButtonGame);
-		radioButtonNormal = (RadioButton) activity
+		radioButtonNormal = (RadioButton) activity_
 				.findViewById(R.id.RadioButtonNormal);
-		radioButtonUi = (RadioButton) activity.findViewById(R.id.RadioButtonUi);
+		radioButtonUi = (RadioButton) activity_
+				.findViewById(R.id.RadioButtonUi);
 		radioGroupDelay = (RadioGroup) activity
 				.findViewById(R.id.RadioGroupDelay);
 	}
 
-	void SetListeners() {
+	void SetListeners(Activity activity_) {
 		// 加速度センサーの使用可否が変更された場合
 		checkBoxAccelerometer
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
