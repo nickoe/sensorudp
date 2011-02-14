@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -18,13 +19,17 @@ import android.widget.TextView.OnEditorActionListener;
 // クラス内クラスでスレッドオブジェクトを実装
 // Thread オブジェクトを継承するか Runnable インターフェイスを実装する
 class ReceiverThread extends Thread {
+
+	static final int ERROR_WAIT = 5000; // wait when failed to receive
+	static final int MAX_LINES = 100;
+	static final int BUFFER_SIZE = 2000;
+	static final String TAG = "SensorUdp";
+
 	volatile Handler handler;
-	volatile boolean toBeContinued;
+	volatile boolean toBeContinued = true;
 	DatagramSocket datagramSocket;
 	DatagramPacket datagramPacket;
 	ArrayList<String> receivedLines;
-	static final int MAX_LINES = 100;
-	static final int BUFFER_SIZE = 2000;
 	TextView textViewReceivedLines;
 	int incomingPort;
 	EditText editTextIncomingPort;
@@ -48,7 +53,7 @@ class ReceiverThread extends Thread {
 		if (receiverThread == null) {
 			receiverThread = new ReceiverThread();
 		}
-		receiverThread.SetActivity(activity_);
+		receiverThread.NotifyActivity(activity_);
 		inGetSingleton = false;
 		return receiverThread;
 	}
@@ -59,7 +64,7 @@ class ReceiverThread extends Thread {
 		return receiverThread;
 	}
 
-	void SetActivity(Activity activity_) {
+	void NotifyActivity(Activity activity_) {
 		textViewReceivedLines = (TextView) activity_
 				.findViewById(R.id.textViewReceivedLines);
 		editTextIncomingPort = (EditText) activity_
@@ -68,13 +73,12 @@ class ReceiverThread extends Thread {
 				.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView arg0, int arg1,
 							KeyEvent arg2) {
-						interrupt();
-						incomingPort = Integer.parseInt(arg0.getText()
-								.toString());
+						ChangeIncomingPort(Integer.parseInt(arg0.getText()
+								.toString()));
 						return true;
 					}
 				});
-		editTextIncomingPort.postInvalidate();
+		editTextIncomingPort.onEditorAction(EditorInfo.IME_NULL);
 	}
 
 	@Override
@@ -83,13 +87,11 @@ class ReceiverThread extends Thread {
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		if (datagramSocket != null) {
 			datagramSocket.close();
+			datagramSocket = null;
 		}
-		datagramSocket = null;
 		super.interrupt();
 	}
 
@@ -107,24 +109,51 @@ class ReceiverThread extends Thread {
 		}
 	}
 
+	public void ChangeIncomingPort(int new_incoming_port) {
+		incomingPort = new_incoming_port;
+		if (datagramSocket != null) {
+			datagramSocket.close();
+			datagramSocket = null;
+		}
+		if (!isAlive()) {
+			Log.e(TAG,
+					"ReceiverThread#ChangeIncomingPort detected the thread is already dead.");
+		}
+	}
+
 	public void run() {
 		while (toBeContinued == true) {
-			// UDPパケットを受信 ノンブロッキング処理にしたいが今はブロッキング処理
+
 			if (datagramSocket == null) {
 				try {
 					datagramSocket = new DatagramSocket(incomingPort);
 				} catch (SocketException e) {
-					Log.e("ReceiverThread", "failed to open datagram socket.");
-					return;
+					Log.w(TAG,
+							"ReceiverThread#run failed to open datagram socket.");
+					try {
+						Thread.sleep(ERROR_WAIT);
+					} catch (InterruptedException e1) {
+						Log.v(TAG,
+								"ReceiverThread#run is recovering from error after timeout.");
+					}
+					continue;
 				}
 			}
+
 			try {
 				datagramSocket.receive(datagramPacket);
 			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e("ReceiverThread", "failed to receive datagram packet.");
-				return;
+				Log.v(TAG,
+						"ReceiverThread#run catched IOException from DatagramSocket#receive.");
+				try {
+					Thread.sleep(ERROR_WAIT);
+				} catch (InterruptedException e1) {
+					Log.v(TAG,
+							"ReceiverThread#run is recovering from error after timeout.");
+				}
+				continue;
 			}
+
 			InetAddress inet_address = datagramPacket.getAddress();
 			String sender_address = inet_address.getHostAddress();
 			int sender_port = datagramPacket.getPort();
