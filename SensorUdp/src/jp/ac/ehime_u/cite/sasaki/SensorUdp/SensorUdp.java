@@ -8,68 +8,68 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class SensorUdp extends Activity {
-	MySensorEventListener mySensorEventListener;
-	MyLocationListener myLocationListener;
+    MySensorEventListener mySensorEventListener;
+    MyLocationListener myLocationListener;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.sensor_udp); // ビューの生成
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sensor_udp); // ビューの生成
 
-		mySensorEventListener = MySensorEventListener.GetSingleton(this);
-		myLocationListener = MyLocationListener.GetSingleton(this);
-	}
+        mySensorEventListener = MySensorEventListener.GetSingleton(this);
+        myLocationListener = MyLocationListener.GetSingleton(this);
+    }
 
-	@Override
-	protected void onPause() {
-		mySensorEventListener.UncheckAll();
-		myLocationListener.UncheckAll();
-		super.onPause();
-	}
+    @Override
+    protected void onPause() {
+        mySensorEventListener.UncheckAll();
+        myLocationListener.UncheckAll();
+        super.onPause();
+    }
 
-	@Override
-	protected void onStop() {
-		mySensorEventListener.UncheckAll();
-		myLocationListener.UncheckAll();
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+        mySensorEventListener.UncheckAll();
+        myLocationListener.UncheckAll();
+        super.onStop();
+    }
 
-	@Override
-	protected void onDestroy() {
-		mySensorEventListener.UncheckAll();
-		myLocationListener.UncheckAll();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        mySensorEventListener.UncheckAll();
+        myLocationListener.UncheckAll();
+        super.onDestroy();
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater menu_infrator = getMenuInflater();
-		menu_infrator.inflate(R.menu.common, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menu_infrator = getMenuInflater();
+        menu_infrator.inflate(R.menu.common, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-		switch (item.getItemId()) {
-		case R.id.itemSensorSettings: {
-			Intent intent = new Intent(this, SensorUdp.class);
-			startActivity(intent);
-			return true;
-		}
-		case R.id.itemTransmissionSettings:{
-			Intent intent = new Intent(this, TransmissionSettings.class);
-			startActivity(intent);
-			return true;
-		}
-		case R.id.itemAbout:{
-			Intent intent = new Intent(this, About.class);
-			startActivity(intent);
-			return true;
-		}
-		}
-		return false;
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+        case R.id.itemSensorSettings: {
+            Intent intent = new Intent(this, SensorUdp.class);
+            startActivity(intent);
+            return true;
+        }
+        case R.id.itemTransmissionSettings: {
+            Intent intent = new Intent(this, TransmissionSettings.class);
+            startActivity(intent);
+            return true;
+        }
+        case R.id.itemAbout: {
+            Intent intent = new Intent(this, About.class);
+            startActivity(intent);
+            return true;
+        }
+        }
+        return false;
+    }
 }
