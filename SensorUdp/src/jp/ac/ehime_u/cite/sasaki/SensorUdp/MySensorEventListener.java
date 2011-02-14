@@ -62,6 +62,7 @@ public class MySensorEventListener implements SensorEventListener {
 		}
 		mySensorEventListener.activity = activity_;
 		mySensorEventListener.FindViews(activity_);
+		mySensorEventListener.GetSensorManager(activity_);
 		mySensorEventListener.SetListeners(activity_);
 		inGetSingleton = false;
 		return mySensorEventListener;
@@ -198,7 +199,7 @@ public class MySensorEventListener implements SensorEventListener {
 		radioButtonUi = radio_button_ui;
 	}
 
-	void GetSensorManager(){
+	void GetSensorManager(Activity activity_) {
 		// センサーマネージャーの生成
 		// 本物のセンターを使う場合
 		sensorManager = (SensorManager) activity
@@ -208,8 +209,8 @@ public class MySensorEventListener implements SensorEventListener {
 		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
 		// sensorManager.connectSimulator();
 	}
-	
-	int GetSensorDelay(){
+
+	int GetSensorDelay() {
 		int sensor_delay;
 		if (radioButtonFastest.isChecked()) {
 			sensor_delay = SensorManager.SENSOR_DELAY_FASTEST;
@@ -224,10 +225,10 @@ public class MySensorEventListener implements SensorEventListener {
 		}
 		return sensor_delay;
 	}
-	
+
 	void RegisterSensorListener() {
-		GetSensorManager();
-		
+		//GetSensorManager();
+
 		try {
 			List<Sensor> accelerometer_sensors = sensorManager
 					.getSensorList(Sensor.TYPE_ACCELEROMETER);
