@@ -1,8 +1,5 @@
 package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
-import java.text.DecimalFormat;
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -17,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView.OnEditorActionListener;
+import java.text.DecimalFormat;
+import java.util.Date;
 
 /**
  * ロケーションリスナを実装するクラス。
@@ -39,7 +38,7 @@ public class MyLocationListener implements LocationListener {
     TextView textViewGps;
     TextView textViewNetwork;
 
-    Activity activity;
+    // Activity activity;
 
     int counterNetwork;
     int counterGps;
@@ -60,10 +59,10 @@ public class MyLocationListener implements LocationListener {
         if (myLocationListener == null) {
             myLocationListener = new MyLocationListener();
         }
-        myLocationListener.activity = activity_;
-        myLocationListener.FindView();
+        // myLocationListener.activity = activity_;
+        myLocationListener.FindView(activity_);
         myLocationListener.SetListeners();
-        myLocationListener.CreateLocationManager();
+        myLocationListener.CreateLocationManager(activity_);
         return myLocationListener;
     }
 
@@ -71,20 +70,20 @@ public class MyLocationListener implements LocationListener {
         return myLocationListener;
     }
 
-    void FindView() {
-        checkBoxGps = (CheckBox) activity.findViewById(R.id.CheckBoxGps);
-        checkBoxNetwork = (CheckBox) activity
+    void FindView(Activity activity_) {
+        checkBoxGps = (CheckBox) activity_.findViewById(R.id.CheckBoxGps);
+        checkBoxNetwork = (CheckBox) activity_
                 .findViewById(R.id.CheckBoxNetwork);
-        editTextGpsMinDistance = (EditText) activity
+        editTextGpsMinDistance = (EditText) activity_
                 .findViewById(R.id.EditTextGpsMinDistance);
-        editTextGpsMinInterval = (EditText) activity
+        editTextGpsMinInterval = (EditText) activity_
                 .findViewById(R.id.EditTextGpsMinInterval);
-        textViewGps = (TextView) activity.findViewById(R.id.TextViewGps);
-        editTextNetworkMinDistance = (EditText) activity
+        textViewGps = (TextView) activity_.findViewById(R.id.TextViewGps);
+        editTextNetworkMinDistance = (EditText) activity_
                 .findViewById(R.id.EditTextNetworkMinDistance);
-        editTextNetworkMinInterval = (EditText) activity
+        editTextNetworkMinInterval = (EditText) activity_
                 .findViewById(R.id.EditTextNetworkMinInterval);
-        textViewNetwork = (TextView) activity
+        textViewNetwork = (TextView) activity_
                 .findViewById(R.id.TextViewNetwork);
     }
 
@@ -152,8 +151,8 @@ public class MyLocationListener implements LocationListener {
                 });
     }
 
-    void CreateLocationManager() {
-        locationManager = (LocationManager) activity
+    void CreateLocationManager(Activity activity_) {
+        locationManager = (LocationManager) activity_
                 .getSystemService(Context.LOCATION_SERVICE);
     }
 
