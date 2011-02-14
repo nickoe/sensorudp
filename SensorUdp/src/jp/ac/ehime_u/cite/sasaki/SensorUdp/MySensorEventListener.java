@@ -198,7 +198,7 @@ public class MySensorEventListener implements SensorEventListener {
 		radioButtonUi = radio_button_ui;
 	}
 
-	private void RegisterSensorListener() {
+	void GetSensorManager(){
 		// センサーマネージャーの生成
 		// 本物のセンターを使う場合
 		sensorManager = (SensorManager) activity
@@ -207,7 +207,9 @@ public class MySensorEventListener implements SensorEventListener {
 		// sensorManager =
 		// SensorManagerSimulator.getSystemService(context,Context.SENSOR_SERVICE);
 		// sensorManager.connectSimulator();
-
+	}
+	
+	int GetSensorDelay(){
 		int sensor_delay;
 		if (radioButtonFastest.isChecked()) {
 			sensor_delay = SensorManager.SENSOR_DELAY_FASTEST;
@@ -220,11 +222,17 @@ public class MySensorEventListener implements SensorEventListener {
 		} else {
 			sensor_delay = SensorManager.SENSOR_DELAY_UI;
 		}
+		return sensor_delay;
+	}
+	
+	void RegisterSensorListener() {
+		GetSensorManager();
+		
 		try {
 			List<Sensor> accelerometer_sensors = sensorManager
 					.getSensorList(Sensor.TYPE_ACCELEROMETER);
 			sensorManager.registerListener(this, accelerometer_sensors.get(0),
-					sensor_delay);
+					GetSensorDelay());
 		} catch (IndexOutOfBoundsException e) {
 			this.checkBoxAccelerometer.setChecked(false);
 			this.checkBoxAccelerometer.setClickable(false);
@@ -233,7 +241,7 @@ public class MySensorEventListener implements SensorEventListener {
 			List<Sensor> magnetic_field_sensors = sensorManager
 					.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
 			sensorManager.registerListener(this, magnetic_field_sensors.get(0),
-					sensor_delay);
+					GetSensorDelay());
 		} catch (IndexOutOfBoundsException e) {
 			this.checkBoxMagneticField.setChecked(false);
 			this.checkBoxMagneticField.setClickable(false);
@@ -242,7 +250,7 @@ public class MySensorEventListener implements SensorEventListener {
 			List<Sensor> orientation_sensors = sensorManager
 					.getSensorList(Sensor.TYPE_ORIENTATION);
 			sensorManager.registerListener(this, orientation_sensors.get(0),
-					sensor_delay);
+					GetSensorDelay());
 		} catch (IndexOutOfBoundsException e) {
 			this.checkBoxOrientation.setChecked(false);
 			this.checkBoxOrientation.setClickable(false);
