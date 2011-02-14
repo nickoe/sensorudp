@@ -41,10 +41,8 @@ public class MySensorEventListener implements SensorEventListener {
     int counterOrientation;
 
     SenderThread senderThread;
-    // Activity activity;
 
     static MySensorEventListener mySensorEventListener;
-    static boolean inGetSingleton;
 
     /**
      * Constructor is private in singleton pattern.

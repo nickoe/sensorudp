@@ -29,7 +29,6 @@ public class MyLocationListener implements LocationListener {
     LocationManager locationManager;
     SenderThread senderThread;
     static MyLocationListener myLocationListener;
-    static boolean inGetSingleton;
 
     CheckBox checkBoxGps;
     CheckBox checkBoxNetwork;
@@ -58,9 +57,6 @@ public class MyLocationListener implements LocationListener {
      * @return
      */
     synchronized static MyLocationListener GetSingleton(Activity activity_) {
-        if (inGetSingleton)
-            return null;
-        inGetSingleton = true;
         if (myLocationListener == null) {
             myLocationListener = new MyLocationListener();
         }
@@ -68,13 +64,10 @@ public class MyLocationListener implements LocationListener {
         myLocationListener.FindView();
         myLocationListener.SetListeners();
         myLocationListener.CreateLocationManager();
-        inGetSingleton = false;
         return myLocationListener;
     }
 
     synchronized static MyLocationListener GetSingleton() {
-        if (inGetSingleton)
-            throw new ExceptionInInitializerError();
         return myLocationListener;
     }
 
