@@ -54,23 +54,16 @@ public class MySensorEventListener implements SensorEventListener {
 
     synchronized public static MySensorEventListener GetSingleton(
             Activity activity_) {
-        if (inGetSingleton)
-            return null;
-        inGetSingleton = true;
         if (mySensorEventListener == null) {
             mySensorEventListener = new MySensorEventListener();
         }
-        // mySensorEventListener.activity = activity_;
         mySensorEventListener.FindViews(activity_);
         mySensorEventListener.GetSensorManager(activity_);
         mySensorEventListener.SetListeners(activity_);
-        inGetSingleton = false;
         return mySensorEventListener;
     }
 
     synchronized public static MySensorEventListener GetSingleton() {
-        if (inGetSingleton)
-            throw new ExceptionInInitializerError();
         return mySensorEventListener;
     }
 
