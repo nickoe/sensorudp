@@ -41,7 +41,7 @@ public class MySensorEventListener implements SensorEventListener {
 	int counterOrientation;
 
 	SenderThread senderThread;
-	Activity activity;
+	// Activity activity;
 
 	static MySensorEventListener mySensorEventListener;
 	static boolean inGetSingleton;
@@ -60,7 +60,7 @@ public class MySensorEventListener implements SensorEventListener {
 		if (mySensorEventListener == null) {
 			mySensorEventListener = new MySensorEventListener();
 		}
-		mySensorEventListener.activity = activity_;
+		// mySensorEventListener.activity = activity_;
 		mySensorEventListener.FindViews(activity_);
 		mySensorEventListener.GetSensorManager(activity_);
 		mySensorEventListener.SetListeners(activity_);
@@ -95,7 +95,7 @@ public class MySensorEventListener implements SensorEventListener {
 				.findViewById(R.id.RadioButtonNormal);
 		radioButtonUi = (RadioButton) activity_
 				.findViewById(R.id.RadioButtonUi);
-		radioGroupDelay = (RadioGroup) activity
+		radioGroupDelay = (RadioGroup) activity_
 				.findViewById(R.id.RadioGroupDelay);
 	}
 
@@ -202,7 +202,7 @@ public class MySensorEventListener implements SensorEventListener {
 	void GetSensorManager(Activity activity_) {
 		// センサーマネージャーの生成
 		// 本物のセンターを使う場合
-		sensorManager = (SensorManager) activity
+		sensorManager = (SensorManager) activity_
 				.getSystemService(Context.SENSOR_SERVICE);
 		// センサーシミュレータを使う場合
 		// sensorManager =
@@ -227,7 +227,7 @@ public class MySensorEventListener implements SensorEventListener {
 	}
 
 	void RegisterSensorListener() {
-		//GetSensorManager();
+		// GetSensorManager();
 
 		try {
 			List<Sensor> accelerometer_sensors = sensorManager
