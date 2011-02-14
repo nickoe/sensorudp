@@ -1,9 +1,5 @@
 package jp.ac.ehime_u.cite.sasaki.SensorUdp;
 
-import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -17,6 +13,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.List;
 
 public class MySensorEventListener implements SensorEventListener {
     // 本物のセンターを使う場合
@@ -110,7 +109,6 @@ public class MySensorEventListener implements SensorEventListener {
         // 方向センサーの使用可否が変更された場合
         checkBoxOrientation
                 .setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
                     public void onCheckedChanged(CompoundButton buttonView,
                             boolean isChecked) {
                         counterOrientation = 0;
@@ -120,7 +118,8 @@ public class MySensorEventListener implements SensorEventListener {
         radioGroupDelay
                 .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        UnregisterSensorListener();
+                        sensorManager.unregisterListener(MySensorEventListener.GetSingleton());
+                        //UnregisterSensorListener();
                         RegisterSensorListener();
                         Log.v("SensorUdp", "Delay changed");
                     }
@@ -181,15 +180,6 @@ public class MySensorEventListener implements SensorEventListener {
         }
     }
 
-    public void SetView(RadioButton radio_button_fastest,
-            RadioButton radio_button_game, RadioButton radio_button_normal,
-            RadioButton radio_button_ui) {
-        radioButtonFastest = radio_button_fastest;
-        radioButtonGame = radio_button_game;
-        radioButtonNormal = radio_button_normal;
-        radioButtonUi = radio_button_ui;
-    }
-
     void GetSensorManager(Activity activity_) {
         // センサーマネージャーの生成
         // 本物のセンターを使う場合
@@ -228,6 +218,7 @@ public class MySensorEventListener implements SensorEventListener {
         } catch (IndexOutOfBoundsException e) {
             this.checkBoxAccelerometer.setChecked(false);
             this.checkBoxAccelerometer.setClickable(false);
+            this.textViewAccelerometer.setText("No accelerometer");
         }
         try {
             List<Sensor> magnetic_field_sensors = sensorManager
@@ -237,6 +228,7 @@ public class MySensorEventListener implements SensorEventListener {
         } catch (IndexOutOfBoundsException e) {
             this.checkBoxMagneticField.setChecked(false);
             this.checkBoxMagneticField.setClickable(false);
+            this.textViewMagneticField.setText("No magnetic field sensor");
         }
         try {
             List<Sensor> orientation_sensors = sensorManager
@@ -246,6 +238,7 @@ public class MySensorEventListener implements SensorEventListener {
         } catch (IndexOutOfBoundsException e) {
             this.checkBoxOrientation.setChecked(false);
             this.checkBoxOrientation.setClickable(false);
+            this.textViewOrientation.setText("No orientation sensor");
         }
         // SensorManager.SENSOR_DELAY_FASTEST 最高速度
         // SensorManager.SENSOR_DELAY_GAME ゲーム速度
@@ -253,7 +246,7 @@ public class MySensorEventListener implements SensorEventListener {
         // SensorManager.SENSOR_DELAY_UI UI速度
     }
 
-    private void UnregisterSensorListener() {
-        sensorManager.unregisterListener(this);
-    }
+//    private void UnregisterSensorListener() {
+//        sensorManager.unregisterListener(this);
+//    }
 }

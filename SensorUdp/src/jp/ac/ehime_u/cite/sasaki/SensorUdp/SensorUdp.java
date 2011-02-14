@@ -16,30 +16,8 @@ public class SensorUdp extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sensor_udp); // ビューの生成
-
         mySensorEventListener = MySensorEventListener.GetSingleton(this);
         myLocationListener = MyLocationListener.GetSingleton(this);
-    }
-
-    @Override
-    protected void onPause() {
-        mySensorEventListener.UncheckAll();
-        myLocationListener.UncheckAll();
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        mySensorEventListener.UncheckAll();
-        myLocationListener.UncheckAll();
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mySensorEventListener.UncheckAll();
-        myLocationListener.UncheckAll();
-        super.onDestroy();
     }
 
     @Override
