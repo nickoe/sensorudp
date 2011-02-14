@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
@@ -21,34 +20,31 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class TransmissionSettings extends Activity {
 
-	TextView textViewReceivedLines; // 受信した行を表示するビュー
-	ReceiverThread receiverThread; // 受信スレッド
-	EditText editTextLiteral;
 	EditText editTextHost;
 	EditText editTextPort;
 	int counterLiteral;
-	Button buttonLiteral;
 	SenderThread senderThread;
+	ReceiverThread receiverThread;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transmission_settings);
 
-		// テキストビューを取得しておく
-		textViewReceivedLines = (TextView) findViewById(R.id.textViewReceivedLines);
-		editTextLiteral = (EditText) this.findViewById(R.id.EditTextLiteral);
-
 		// 任意文字列の送信ボタンが押下された場合
-		buttonLiteral = (Button) this.findViewById(R.id.ButtonLiteral);
-		buttonLiteral.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				++counterLiteral;
-				Date date = new Date();
-				senderThread.SendMessageByUdp("D, " + counterLiteral + ", "
-						+ date.getTime() + ", "
-						+ editTextLiteral.getText().toString());
-			}
-		});
+		findViewById(R.id.ButtonLiteral).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						++counterLiteral;
+						Date date = new Date();
+						senderThread.SendMessageByUdp("D, "
+								+ counterLiteral
+								+ ", "
+								+ date.getTime()
+								+ ", "
+								+ ((EditText) findViewById(R.id.EditTextLiteral))
+										.getText().toString());
+					}
+				});
 
 		// 送信先IPアドレスが変更された時にはパケット送出を停止
 		editTextHost = (EditText) findViewById(R.id.EditTextHost);
@@ -133,12 +129,12 @@ public class TransmissionSettings extends Activity {
 			startActivity(intent);
 			return true;
 		}
-		case R.id.itemTransmissionSettings:{
+		case R.id.itemTransmissionSettings: {
 			Intent intent = new Intent(this, TransmissionSettings.class);
 			startActivity(intent);
 			return true;
 		}
-		case R.id.itemAbout:{
+		case R.id.itemAbout: {
 			Intent intent = new Intent(this, About.class);
 			startActivity(intent);
 			return true;

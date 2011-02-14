@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 // クラス内クラスでスレッドオブジェクトを実装
 // Thread オブジェクトを継承するか Runnable インターフェイスを実装する
@@ -19,11 +21,12 @@ class ReceiverThread extends Thread {
 	volatile Handler handler;
 	volatile boolean toBeContinued;
 	DatagramSocket datagramSocket;
+	DatagramPacket datagramPacket;
 	ArrayList<String> receivedLines;
 	static final int MAX_LINES = 100;
+	static final int BUFFER_SIZE = 2000;
 	TextView textViewReceivedLines;
-	int port;
-	Activity activity;
+	int incomingPort;
 	EditText editTextIncomingPort;
 
 	static ReceiverThread receiverThread;
@@ -32,36 +35,53 @@ class ReceiverThread extends Thread {
 	// シングルトンインスタンスを生成したいのでコンストラクタはプライベート
 	ReceiverThread() {
 		super();
-		this.port = 12345;
-		this.toBeContinued = true;
-		this.receivedLines = new ArrayList<String>();
+		toBeContinued = true;
+		receivedLines = new ArrayList<String>();
+		// 受け付けるデータバッファとUDPパケットを作成
+		byte buffer[] = new byte[BUFFER_SIZE];
+		datagramPacket = new DatagramPacket(buffer, buffer.length);
 	}
 
 	// シングルトンインスタンスを返すスタティックメソッド
-	static public ReceiverThread GetSingleton(Activity activity_) {
+	synchronized static public ReceiverThread GetSingleton(Activity activity_) {
 		inGetSingleton = true;
 		if (receiverThread == null) {
 			receiverThread = new ReceiverThread();
 		}
-		receiverThread.activity = activity_;
-		receiverThread.SetActivity();
+		receiverThread.SetActivity(activity_);
 		inGetSingleton = false;
-		return receiverThread;
-	}	
-	
-	synchronized public ReceiverThread GetSingleton(){
-		if (inGetSingleton) throw new ExceptionInInitializerError();
 		return receiverThread;
 	}
 
-	void SetActivity(){
-		textViewReceivedLines = (TextView) activity.findViewById(R.id.textViewReceivedLines);
-		editTextIncomingPort = (EditText) activity.findViewById(R.id.editTextIncomingPort);
+	synchronized public ReceiverThread GetSingleton() {
+		if (inGetSingleton)
+			throw new ExceptionInInitializerError();
+		return receiverThread;
 	}
+
+	void SetActivity(Activity activity_) {
+		textViewReceivedLines = (TextView) activity_
+				.findViewById(R.id.textViewReceivedLines);
+		editTextIncomingPort = (EditText) activity_
+				.findViewById(R.id.editTextIncomingPort);
+		editTextIncomingPort
+				.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView arg0, int arg1,
+							KeyEvent arg2) {
+						interrupt();
+						incomingPort = Integer.parseInt(arg0.getText()
+								.toString());
+						return true;
+					}
+				});
+		editTextIncomingPort.postInvalidate();
+	}
+
+	@Override
 	public void interrupt() {
 		toBeContinued = false;
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,51 +89,47 @@ class ReceiverThread extends Thread {
 		if (datagramSocket != null) {
 			datagramSocket.close();
 		}
+		datagramSocket = null;
 		super.interrupt();
 	}
 
 	@Override
-	public void start(){
+	public void start() {
 		Log.e("ReceiverThread#start", "unexpected arguments");
 	}
-	
+
 	// コンストラクタを隠蔽しているので初期化はこのメソッドで行う
 	public void start(Handler handler_) {
 		this.toBeContinued = true;
-		if(!this.isAlive()){
+		if (!this.isAlive()) {
 			this.handler = handler_;
 			super.start();
 		}
 	}
 
 	public void run() {
-		// 受け付けるデータバッファとUDPパケットを作成
-		byte buffer[] = new byte[1024];
-		DatagramPacket datagram_packet = new DatagramPacket(buffer,
-				buffer.length);
-
 		while (toBeContinued == true) {
 			// UDPパケットを受信 ノンブロッキング処理にしたいが今はブロッキング処理
 			if (datagramSocket == null) {
 				try {
-					datagramSocket = new DatagramSocket(this.port);
+					datagramSocket = new DatagramSocket(incomingPort);
 				} catch (SocketException e) {
 					Log.e("ReceiverThread", "failed to open datagram socket.");
 					return;
 				}
 			}
 			try {
-				datagramSocket.receive(datagram_packet);
+				datagramSocket.receive(datagramPacket);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Log.e("ReceiverThread", "failed to receive datagram packet.");
 				return;
 			}
-			InetAddress inet_address = datagram_packet.getAddress();
+			InetAddress inet_address = datagramPacket.getAddress();
 			String sender_address = inet_address.getHostAddress();
-			int sender_port = datagram_packet.getPort();
-			String received_data = new String(datagram_packet.getData(), 0,
-					datagram_packet.getLength());
+			int sender_port = datagramPacket.getPort();
+			String received_data = new String(datagramPacket.getData(), 0,
+					datagramPacket.getLength());
 
 			// 受信したデータをアレイリストに追加
 			if (receivedLines.size() >= MAX_LINES) {
